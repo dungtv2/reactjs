@@ -11,6 +11,20 @@ const isDeveloping = process.env.NODE_ENV !== 'production';
 const port = isDeveloping ? 3000 : process.env.PORT;
 const app = express();
 
+var MongoClient = require('mongodb');
+
+// Connect to the db
+MongoClient.connect("mongodb://localhost:27018/mydatabase", function(err, db) {
+    if(!err) {
+        console.log("We are connected");
+        var news = db.collection('news')
+        news.find().toArray(function(err, results) {
+            console.dir(results);
+            db.close();
+        });
+    }
+});
+
 if (isDeveloping) {
   const compiler = webpack(config);
   const middleware = webpackMiddleware(compiler, {
