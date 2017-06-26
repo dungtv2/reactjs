@@ -49,8 +49,9 @@ if (isDeveloping) {
     app.use(middleware);
     app.use(webpackHotMiddleware(compiler));
     app.get('/web', function response(req, res) {
-        res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
-        res.end();
+        // res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+        // res.end();
+        res.send("HELLO");
     });
     // app.get('/list', function (req, res, next){
     //     console.log("bi")
