@@ -52,19 +52,12 @@ module.exports = {
         new ExtractTextPlugin("ok.css")
     ],
     // context: path.join(__dirname, 'static'),
-    resolveLoader: {
-        modulesDirectories: ["web_loaders", "web_modules", "node_loaders", "node_modules"],
-        extensions: ["", ".webpack-loader.js", ".web-loader.js", ".loader.js", ".js"],
-        packageMains: ["webpackLoader", "webLoader", "loader", "main", "babel"],
-        // root: path.join(__dirname, 'node_modules')
-    },
-
     module: {
         loaders: [
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: ['babel', 'babel-loader'],
+                loader: 'babel',
                 query: {"presets": ["react", "es2015", "stage-0", "react-hmre"]}
             },
             {

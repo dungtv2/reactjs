@@ -109,8 +109,8 @@ if (isDeveloping) {
     // });
     app.get('*', function response(req, res) {
         console.info("AHIHIIIIIIIIIIIIII")
-        // res.send("Hoai an cut bo`");
-        res.write(middleware1.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+        res.send("Quỳnh Mai ăn cứt bò");
+        // res.write(middleware1.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     });
 }
 
