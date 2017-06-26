@@ -67,7 +67,7 @@ export class Promise {
 
 class Model{
     constructor(){
-        this.name = ""
+        this.name = "Hello"
         this.index = 0
     }
     call_func(){
