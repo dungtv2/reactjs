@@ -114,20 +114,21 @@ class Reducer{
     }
 }
 function MyReducer(state, action){
+    let newState = {}
     switch (action.type){
         case "UNLINK":
-            let newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
             return newState;
         case "CREATE":
-            let newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
             Action.actionCreate();
             return newState;
         case "WRITE":
-            let newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
             Action.actionWrite();
             return newState;
         case "SEARCH":
-            let newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
             Action.actionSearch();
             return newState;
         default:
