@@ -85,9 +85,15 @@ if (isDeveloping) {
     // });
 } else {
     app.use(express.static(__dirname + '/dist'));
+    // app.get('/web', function response(req, res) {
+    //     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+    //     // res.end();
+    //     console.info("ABCCCCCCCCC")
+    //     res.send("HELLO");
+    // });
     app.get('*', function response(req, res) {
         console.info("AHIHIIIIIIIIIIIIII")
-        res.sendFile(path.join(__dirname, 'dist/index.html'));
+        res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     });
 }
 
