@@ -107,9 +107,24 @@ if (isDeveloping) {
     //     console.info("ABCCCCCCCCC")
     //     res.send("HELLO");
     // });
-    app.get('*', function response(req, res) {
+    app.get('/thanh', function response(req, res) {
+        console.info("AHIHIIIIIIIIIIIIII")
+        res.send("Thanh ăn cứt bò");
+        // res.write(middleware1.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+    });
+    app.get('/hoai', function response(req, res) {
+        console.info("AHIHIIIIIIIIIIIIII")
+        res.send("Hoài ăn cứt bò");
+        // res.write(middleware1.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+    });
+    app.get('/mai', function response(req, res) {
         console.info("AHIHIIIIIIIIIIIIII")
         res.send("Quỳnh Mai ăn cứt bò");
+        // res.write(middleware1.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+    });
+    app.get('/yen', function response(req, res) {
+        console.info("AHIHIIIIIIIIIIIIII")
+        res.send("Yến ăn cứt bò");
         // res.write(middleware1.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     });
 }
