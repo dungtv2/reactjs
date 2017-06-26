@@ -14,10 +14,6 @@
   ],
   "author": "Christian Alfoni",
   "license": "MIT",
-  "bugs": {
-//    "url": "https://github.com/christianalfoni/webpack-express-boilerplate/issues"
-  },
-//  "homepage": "https://github.com/christianalfoni/webpack-express-boilerplate",
   "scripts": {
     "test": "",
     "start": "node server",
