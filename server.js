@@ -109,7 +109,8 @@ if (isDeveloping) {
     // });
     app.get('*', function response(req, res) {
         console.info("AHIHIIIIIIIIIIIIII")
-        res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+        res.send("HELLO");
+        // res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     });
 }
 
