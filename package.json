@@ -5,7 +5,7 @@
   "main": "server.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/christianalfoni/webpack-express-boilerplate.git"
+    "url": "https://git.heroku.com/dungcaica.git"
   },
   "keywords": [
     "express",
@@ -15,9 +15,9 @@
   "author": "Christian Alfoni",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/christianalfoni/webpack-express-boilerplate/issues"
+//    "url": "https://github.com/christianalfoni/webpack-express-boilerplate/issues"
   },
-  "homepage": "https://github.com/christianalfoni/webpack-express-boilerplate",
+//  "homepage": "https://github.com/christianalfoni/webpack-express-boilerplate",
   "scripts": {
     "test": "",
     "start": "node server",
