@@ -85,8 +85,8 @@ if (isDeveloping) {
     // });
 } else {
     app.use(express.static(__dirname + '/dist'));
-    const compiler = webpack(config);
-    const middleware = webpackMiddleware(compiler, {
+    const compiler1 = webpack(config);
+    const middleware1 = webpackMiddleware(compiler1, {
         publicPath: config.output.publicPath,
         contentBase: 'dist',
         stats: {
@@ -99,8 +99,8 @@ if (isDeveloping) {
         }
     });
 
-    app.use(middleware);
-    app.use(webpackHotMiddleware(compiler));
+    app.use(middleware1);
+    app.use(webpackHotMiddleware(compiler1));
     // app.get('/web', function response(req, res) {
     //     res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     //     // res.end();
@@ -110,7 +110,7 @@ if (isDeveloping) {
     app.get('*', function response(req, res) {
         console.info("AHIHIIIIIIIIIIIIII")
         // res.send("Hoai an cut bo`");
-        res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+        res.write(middleware1.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     });
 }
 

@@ -52,6 +52,9 @@ module.exports = {
         new ExtractTextPlugin("ok.css")
     ],
     // context: path.join(__dirname, 'static'),
+    resolveLoader: {
+        root: path.join(__dirname, 'node_modules')
+    },
     module: {
         loaders: [
             {
