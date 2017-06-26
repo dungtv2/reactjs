@@ -88,7 +88,7 @@ if (isDeveloping) {
     const compiler = webpack(config);
     const middleware = webpackMiddleware(compiler, {
         publicPath: config.output.publicPath,
-        contentBase: 'src',
+        contentBase: 'dist',
         stats: {
             colors: true,
             hash: false,
@@ -109,8 +109,8 @@ if (isDeveloping) {
     // });
     app.get('*', function response(req, res) {
         console.info("AHIHIIIIIIIIIIIIII")
-        res.send("Hoai an cut bo`");
-        // res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
+        // res.send("Hoai an cut bo`");
+        res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
     });
 }
 
