@@ -12,24 +12,24 @@ const port = isDeveloping ? 3000 : process.env.PORT;
 const app = express();
 const router = express.Router();
 var mongoose = require('mongoose')
-var Schema = mongoose.Schema, ObjectId = Schema.ObjectId
-var connect = mongoose.connect("mongodb://localhost:27018/mydatabase")
-
-var Xixi = connect.model('news', new Schema({}))
-
-mongoose.connection.on('connected', function () {
-    console.log('Mongoose default connection open to ');
-});
-
-// If the connection throws an error
-mongoose.connection.on('error',function (err) {
-    console.log('Mongoose default connection error: ');
-});
-
-// When the connection is disconnected
-mongoose.connection.on('disconnected', function () {
-    console.log('Mongoose default connection disconnected');
-});
+// var Schema = mongoose.Schema, ObjectId = Schema.ObjectId
+// var connect = mongoose.connect("mongodb://localhost:27018/mydatabase")
+//
+// var Xixi = connect.model('news', new Schema({}))
+//
+// mongoose.connection.on('connected', function () {
+//     console.log('Mongoose default connection open to ');
+// });
+//
+// // If the connection throws an error
+// mongoose.connection.on('error',function (err) {
+//     console.log('Mongoose default connection error: ');
+// });
+//
+// // When the connection is disconnected
+// mongoose.connection.on('disconnected', function () {
+//     console.log('Mongoose default connection disconnected');
+// });
 app.use("/static", express.static('app'))
 if (isDeveloping) {
     const compiler = webpack(config);
@@ -52,35 +52,35 @@ if (isDeveloping) {
         res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
         res.end();
     });
-    app.get('/list', function (req, res, next){
-        console.log("bi")
-        res.send("bibi")
-        // Xixi.find({}, function(err, result){
-        //     if (err) throw err
-        //     res.send(result)
-        //     next()
-        // });
-        // next('route')
-        next()
-        console.log("hihi")
-    });
-    app.get('/list/:id', function (req, res, next) {
-        console.log(req['params']['id'])
-        res.end('mimi')
-        next()
-    });
-    app.get('/list', function (req, res, next) {
-        console.log("la")
-        res.end('lalalala')
-        next()
-    });
-    app.get('/list', function (err, req, res, next) {
-        res.status(500).send('Something broke!')
-    });
-    app.use(function (err, req, res, next){
-        console.error(err.stack)
-        res.status(500).send('Something broke!')
-    });
+    // app.get('/list', function (req, res, next){
+    //     console.log("bi")
+    //     res.send("bibi")
+    //     // Xixi.find({}, function(err, result){
+    //     //     if (err) throw err
+    //     //     res.send(result)
+    //     //     next()
+    //     // });
+    //     // next('route')
+    //     next()
+    //     console.log("hihi")
+    // });
+    // app.get('/list/:id', function (req, res, next) {
+    //     console.log(req['params']['id'])
+    //     res.end('mimi')
+    //     next()
+    // });
+    // app.get('/list', function (req, res, next) {
+    //     console.log("la")
+    //     res.end('lalalala')
+    //     next()
+    // });
+    // app.get('/list', function (err, req, res, next) {
+    //     res.status(500).send('Something broke!')
+    // });
+    // app.use(function (err, req, res, next){
+    //     console.error(err.stack)
+    //     res.status(500).send('Something broke!')
+    // });
 } else {
     app.use(express.static(__dirname + '/dist'));
     app.get('*', function response(req, res) {
