@@ -34,6 +34,7 @@
     "react-dom": "^0.14.3",
     "webpack-dev-middleware": "^1.10.2",
     "html-webpack-plugin": "^1.6.1",
+    "extract-text-webpack-plugin": "^0.8.2",
     "webpack-hot-middleware": "^2.2.0"
   },
   "devDependencies": {
