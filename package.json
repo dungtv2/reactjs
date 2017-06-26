@@ -36,6 +36,7 @@
     "html-webpack-plugin": "^1.6.1",
     "extract-text-webpack-plugin": "^0.8.2",
     "mongoose": "^4.9.8",
+    "babel-loader": "^6.2.3",
     "webpack-hot-middleware": "^2.2.0"
   },
   "devDependencies": {
