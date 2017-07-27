@@ -1,7 +1,5 @@
-/**
- * Created by hp on 7/27/17.
- */
 import React, { Component } from 'react'
+
 
 function Pp(WrappedComponent){
     const render = WrappedComponent.prototype.render;

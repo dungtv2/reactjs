@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import reactMixin from 'react-mixin'
 import styles from './App.css';
 import styleok from './ok.less';
@@ -36,9 +37,13 @@ class App extends Component {
                     },
                     settings: {label: "Settings", display: "block", href: "/settings", active: "no-active", name: "settings", isParent: true,
                             child: []}};
-        this.model_data = {home: {title: "Home"},
-                           user: {title: "User"},
-                           config: {title: "Configuration"}}
+        this.model_data = {home: {title: "Home",
+                                  data: {name: {string: "Name", type: "char"},
+                                         age: {string: "Age", type: "int"}}},
+                           user: {title: "User", data: {name: {string: "Name", type: "char"},
+                               age: {string: "Age", type: "int"}}},
+                           config: {title: "Configuration", data: {name: {string: "Name", type: "char"},
+                               age: {string: "Age", type: "int"}}}}
         /*
         * current_nav_main: is current main menu (default is "home")
         * current_child_menu: is current Left Menu
@@ -68,5 +73,7 @@ class App extends Component {
         );
     }
 }
-
+App.propTypes = {
+    name: PropTypes.string, children: PropTypes.element.isRequired
+};
 module.exports = {App: Pp(App)}

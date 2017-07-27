@@ -153,12 +153,10 @@ class TreeRow extends Component {
         super(props)
     }
     onClickItem() {
-        this.app.App.changeState(U(this.app.App.state, {active_id: this.data.id}));
+        this.app.App.changeState(U(this.app.App.state, {active_id: {$set: this.data.id}}));
         this.app.Application.change_view_manager("form")
-        // do something
     }
     __onBeforeRender(){
-        // this.isHeader = this.props.hasOwnProperty("isHeader") ? true : false;
         this.data = this.props.item;
     }
     render() {
