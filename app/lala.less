@@ -1,4 +1,233 @@
+@base-background-color: #f0eeee;
+@base-border-color:  #afafb6;
+*{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+body{
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #333333;
+  background-color: #fff;
+  overflow: hidden;
+  height: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+a{
+  color: #337ab7;
+  text-decoration: none;
+  background-color: transparent;
+}
+a:hover{
+  cursor: pointer;
+}
+html{
+  height: 100%;
+}
+h1, h2, h3 {}
+ul, ol {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+li{
+
+}
 @sasa: white;
 .mimi {
   color: @sasa;
+}
+.block{
+  display: block !important;
+}
+.none{
+  display: none !important;
+}
+.hidden{
+  display: none !important;
+}
+.ml-3{
+  margin-left: 3px;
+}
+.ml-5{
+  margin-left: 5px;
+}
+.nav {
+  margin-bottom: 0px;
+  padding-left: 0px;
+  list-style: none;
+}
+.nav > li{
+  position: relative;
+  display: none;
+}
+.nav > li > a{
+  position: relative;
+  display: block;
+  padding: 10px 15px;
+  line-height: 20px;
+}
+// ----------------Menu Main-------------------
+#app {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+  color: #4c4c4c;
+  font-size: 13px;
+  background: white;
+}
+#root{
+  height: 100%;
+}
+
+#nav-main{
+  background-color: #222;
+  border-color: #080808;
+  min-height: 34px;
+  z-index: 1001;
+  border-radius: 0;
+  li{
+    float: left;
+    a{
+      padding: 4px 8px 4px 8px;
+      margin-top: 3px;
+      font-size: 13px;
+      color: #9d9d9d;
+      span{
+        line-height: 20px;
+      }
+    }
+    a:hover {
+      color: white;
+    }
+  }
+  li.active{
+    a{
+      color: #fff;
+      background-color: #080808;
+    }
+  }
+  .navbar-collapse{
+    border-color: #101010;
+    padding-right: 15px;
+    padding-left: 15px;
+  }
+}
+
+#app-container{
+  display: flex;
+  #app-left{
+    background-color: #f0eeee;
+    width: 220px;
+    border-right: 1px solid #afafb6;
+    position: relative;
+    flex-grow: 0
+  }
+  #app-application{
+    width: 100%;
+    // ------------APP Control Panel-----------
+    .app-control-panel{
+      background-color: @base-background-color;
+      border-bottom: 1px solid @base-border-color;
+      -webkit-box-flex: 0;
+      -webkit-flex: 0 0 auto;
+      -ms-flex: 0 0 auto;
+      flex: 0 0 auto;
+      user-select: none;
+      .row:first-child{
+        padding-top: 3px;
+        padding-bottom: 3px;
+        // --View Title
+        .app-cp-title{
+          .app-view-title{
+            font-size: 18px;
+            padding: 8px 15px;
+          }
+        }
+        // --SearchView---
+        .app-cp-search-view{
+          .app-search-view{
+            position: relative;
+            .app-sv-unfold{
+              position: absolute;
+              top: 8px;
+              right: 5px;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+      .row:last-child{
+        padding-bottom: 10px;
+        // ----Filter----
+        .app-cp-filter{
+
+        }
+        // ----View and Pager----
+        .app-toolbar {
+          float: right;
+          .app-cp-pager {
+            display: inline-block;
+            margin-right: 5px;
+            .app-cp-page-value {
+              margin-right: 3px;
+              display: inline-block;
+            }
+            div:last-child {
+              display: inline-block;
+            }
+          }
+          .app-cp-switch-buttons {
+            display: inline-block;
+          }
+        }
+      }
+    }
+    // ------------APP View Manager------------
+    .app-view-manager{
+      .app-vm-content{
+
+      }
+    }
+  }
+}
+
+// -----------------Widget-------------------
+// 1. FormView
+// 2. TreeView
+.app-view-tree{
+  background-color: white;
+  table{
+    width: 100%;
+    td, th{
+      padding: 3px 6px;
+      line-height: 18px;
+      text-align: left;
+    }
+    thead{
+      border-bottom: 2px solid #cacaca;
+      background: #eee;
+      vertical-align: top;
+      font-weight: bold;
+      th{
+        font-weight: bold;
+        vertical-align: middle;
+      }
+    }
+    tbody{
+      tr{
+        height: 27px;
+        border-top: 1px solid #ddd;
+      }
+      tr:nth-child(odd){
+        background-color: #efeff8;
+      }
+    }
+    tfoot{
+
+    }
+  }
 }

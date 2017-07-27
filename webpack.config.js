@@ -14,13 +14,20 @@ module.exports = {
         net: 'empty',
         tls: 'empty'
     },
+    // vendor: [
+    //     'react',
+    //     'react-dom',
+    //     'react-redux',
+    //     'redux'
+    // ],
     entry: [
        'webpack-hot-middleware/client?reload=true',
         path.join(__dirname, 'app/main.js')
     ],
     output: {
         path: path.join(__dirname, '/dist/'),
-        filename: 'dung.js',
+        filename: '[name].js',
+        // filename: 'dung.js',
         publicPath: '/',
     },
     plugins: [
@@ -57,7 +64,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 query: {"presets": ["react", "es2015", "stage-0", "react-hmre"]}
             },
             {

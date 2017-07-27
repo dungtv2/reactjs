@@ -3,6 +3,13 @@
 const path = require('path');
 const express = require('express');
 const webpack = require('webpack');
+const graphqlHTTP = require('express-graphql');
+// import {
+//     graphql,
+//     GraphQLSchema,
+//     GraphQLObjectType,
+//     GraphQLString
+// } from 'graphql';
 const webpackMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const config = require('./webpack.config.js');
@@ -54,35 +61,40 @@ if (isDeveloping) {
         console.info("ABCCCCCCCCC")
         res.send("HELLO");
     });
-    // app.get('/list', function (req, res, next){
-    //     console.log("bi")
-    //     res.send("bibi")
-    //     // Xixi.find({}, function(err, result){
-    //     //     if (err) throw err
-    //     //     res.send(result)
-    //     //     next()
-    //     // });
-    //     // next('route')
-    //     next()
-    //     console.log("hihi")
-    // });
-    // app.get('/list/:id', function (req, res, next) {
-    //     console.log(req['params']['id'])
-    //     res.end('mimi')
-    //     next()
-    // });
-    // app.get('/list', function (req, res, next) {
-    //     console.log("la")
-    //     res.end('lalalala')
-    //     next()
-    // });
-    // app.get('/list', function (err, req, res, next) {
-    //     res.status(500).send('Something broke!')
-    // });
-    // app.use(function (err, req, res, next){
-    //     console.error(err.stack)
-    //     res.status(500).send('Something broke!')
-    // });
+    app.get('/list', function (req, res, next){
+        console.log("bi")
+        res.send("bibi")
+        // Xixi.find({}, function(err, result){
+        //     if (err) throw err
+        //     res.send(result)
+        //     next()
+        // });
+        // next('route')
+        next()
+        console.log("hihi")
+    });
+    app.get('/list/:id', function (req, res, next) {
+        console.log(req['params']['id'])
+        res.end('mimi')
+        next()
+    });
+    app.get('/list', function (req, res, next) {
+        console.log("la")
+        res.end('lalalala')
+        next()
+    });
+    app.get('/list', function (err, req, res, next) {
+        res.status(500).send('Something broke!')
+    });
+    app.use(function (err, req, res, next){
+        console.error(err.stack)
+        res.status(500).send('Something broke!')
+    });
+    // app.use('/graphql', graphqlHTTP(async (req, res, graphQLParams) => ({
+    //     schema: MyGraphQLSchema,
+    //     rootValue: "",
+    //     graphiql: true
+    // })))
 } else {
     app.use(express.static(__dirname + '/dist'));
     const compiler1 = webpack(config);
