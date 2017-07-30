@@ -39,7 +39,7 @@ class FieldChar extends Component {
         return (
             <div className="form-group">
                 <div className="col-xs-6">
-                    <label for={field.name}>{field.label}</label>
+                    <label for={field.name}>{field.string}</label>
                     <input className="form-control" id={field.name} type={field.name} placeholder={field.placeholder} />
                 </div>
             </div>
@@ -51,15 +51,17 @@ class TextArea extends React.Component {
         var field = this.props.field;
         return (
             <div className="form-group">
-                <label for={field.name}>{field.label}</label>
+                <label for={field.name}>{field.string}</label>
                 <textarea className="form-control" rows="5" id={field.name} placeholder={field.placeholder}></textarea>
             </div>
         )
     }
 }
 class Selection extends React.Component {
+    __onBeforeRender(){
+        this.field = this.props.field;
+    }
     render() {
-        var field = this.props.field;
         return (
             <div></div>
         )
@@ -69,11 +71,6 @@ class Selection extends React.Component {
 class FormView extends React.Component {
     constructor(props) {
         super(props);
-        this.field = {name: {label: "Name", type: "input", name: "name", placeholder: "Name..."},
-                      age: {label: "Age", type: "int", name: "age", placeholder: "Age..."},
-                      password: {label: "Password", type: "password", name: "password", placeholder: "Password..."},
-                      email: {label: "Email", type: "email",    name: "email", placeholder: "Email..."},
-                      note: {label: "Note", type: "text", name: "note", placeholder: "Note..."}}
         this.render_field = this.render_field.bind(this);
     }
     render_field(field){
@@ -81,17 +78,22 @@ class FormView extends React.Component {
         var input = new Set();
         var select = new Set();
         var text = new Set();
-        input.add("input").add("password").add("integer").add("inter").add("email");
+        input.add("input").add("password").add("integer").add("int").add("email");
         select.add("selection").add("select");
         text.add("text").add("textarea");
         if (input.has(field.type)){
-            html = <FieldChar field={field} />
+            html = <FieldChar key={field.name} app={this.app} field={field} />;
         }else if (select.has(field.type)){
-            html = <Selection field={field} />
+            html = <Selection key={field.name} app={this.app} field={field} />;
         }else if (text.has(field.type)){
-            html = <TextArea field={field} />
+            html = <TextArea key={field.name} app={this.app} field={field} />;
         }
-        return html
+        return html;
+    }
+    __onBeforeRender(){
+        this.data = this.props.app.App.model_data[this.props.app.App.state.current_child_menu];
+        this.title = this.data.title;
+        this.field = this.data.field;
     }
     render() {
         return (

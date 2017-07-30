@@ -148,41 +148,15 @@ function MyReducer(state, action){
             return state
     }
 }
-var store = createStore(MyReducer, defaultState, applyMiddleware(thunkMiddleware, loggerMiddleware))
-
-// function Pp(WrappedComponent){
-//     const render = WrappedComponent.prototype.render;
-//     WrappedComponent.prototype.render = function(){
-//         if (this.__proto__.hasOwnProperty("__onBeforeRender")){
-//             this.__onBeforeRender();
-//         }
-//         if (this.props.hasOwnProperty("app")) {
-//             let self = Object.assign({}, this)
-//             let app = Object.assign({}, this.props.app);
-//             app[this.constructor.name] = self;
-//             this.app = app;
-//         }
-//         return render.bind(this)();
-//     }
-//     return class BaseView extends Component {
-//         constructor(props){
-//             super(props);
-//             this.setAppForComponent = this.setAppForComponent.bind(this);
-//         }
-//         setAppForComponent(wrappedComponentInstance) {
-//             console.log("abc");
-//         }
-//         render () {
-//             const injectedProp = this.setAppForComponent;
-//             let newProps = Object.assign({}, this.props, {ref: this.setAppForComponent});
-//             return <WrappedComponent injectedProp={injectedProp} {...newProps} />
-//         }
-//     }
-// }
+var store = createStore(MyReducer, defaultState, applyMiddleware(thunkMiddleware, loggerMiddleware));
 
 class MainMenu extends Component {
     constructor(props){
         super(props);
+        this.onClickMenu = this.onClickMenu.bind(this);
+    }
+    onClickMenu(item){
+        this.$el.find("li").removeClass("active");
     }
     render() {
         return (
@@ -207,10 +181,13 @@ class MenuItem extends Component {
     }
     onClickMenu(item){
         if (item.isParent){
+            this.app.MainMenu.onClickMenu(item);
             this.app.App.onClickMenu(item);
         }else{
+            this.app.LeftBar.onClickMenu(item);
             this.app.Container.onClickMenu(item);
         }
+        this.$el.addClass('active');
     }
     render(){
         let item = this.props.item;
@@ -249,6 +226,10 @@ class Container extends Component {
 class LeftBar extends Component {
     constructor(props) {
         super(props)
+        this.onClickMenu = this.onClickMenu.bind(this);
+    }
+    onClickMenu(item){
+        this.$el.find("li").removeClass("active");
     }
     render() {
         var menu_child = this.app.App.menu[this.app.App.state.current_nav_main].child;
@@ -328,6 +309,49 @@ class CPButton extends Component {
     }
 }
 
+class CPToolBarPager extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (
+            <div className="app-cp-pager">
+                <div className="app-cp-page-value">
+                    <span>1-80 of 122</span>
+                </div>
+                <div className="btn-group btn-group-sm oe-pager-buttons">
+                    <a type="button" title="" className="fa fa-chevron-left btn btn-default oe-pager-button" data-original-title="Tree"></a>
+                    <a type="button" title="" className="fa fa-chevron-right btn btn-default oe-pager-button" data-original-title="Tree"></a>
+                </div>
+            </div>
+        );
+    }
+}
+
+class CPToolBarSwitchButton extends Component {
+    constructor(props) {
+        super(props);
+    }
+    __onBeforeRender(){
+        this.current_view = this.props.app.App.state.current_view;
+    }
+    render(){
+        return (
+            <div className="app-cp-switch-buttons btn-group btn-group-sm">
+                <button type="button" onClick={() => this.props.app.Application.change_view_manager("tree")} title=""
+                        className={classNames("btn btn-default fa fa-list-ul oe-cp-switch-list", this.current_view === "tree" ? "active" : "")}
+                        data-original-title="Tree"></button>
+                <button type="button" onClick={() => this.props.app.Application.change_view_manager("kanban")} title=""
+                        className={classNames("btn btn-default fa fa-th-large oe-cp-switch-kanban", this.current_view === "kanban" ? "active" : "")}
+                        data-original-title="Kanban"></button>
+                <button type="button" onClick={() => this.props.app.Application.change_view_manager("form")} title=""
+                        className={classNames("btn btn-default fa fa-edit oe-cp-switch-form", this.current_view === "form" ? "active" : "")}
+                        data-original-title="Form"></button>
+            </div>
+        );
+    }
+}
+
 class CPToolBar extends Component {
     constructor(props){
         super(props);
@@ -335,20 +359,8 @@ class CPToolBar extends Component {
     render() {
         return (
             <div className="app-toolbar">
-                <div className="app-cp-pager">
-                    <div className="app-cp-page-value">
-                        <span>1-80 of 122</span>
-                    </div>
-                    <div className="btn-group btn-group-sm oe-pager-buttons">
-                        <a type="button" title="" className="fa fa-chevron-left btn btn-default oe-pager-button" data-original-title="Tree"></a>
-                        <a type="button" title="" className="fa fa-chevron-right btn btn-default oe-pager-button" data-original-title="Tree"></a>
-                    </div>
-                </div>
-                <div className="app-cp-switch-buttons btn-group btn-group-sm">
-                    <button type="button" onClick={() => this.props.app.Application.change_view_manager("tree")} title="" className="btn btn-default fa fa-list-ul oe-cp-switch-list active" data-original-title="Tree"></button>
-                    <button type="button" onClick={() => this.props.app.Application.change_view_manager("kanban")} title="" className="btn btn-default fa fa-th-large oe-cp-switch-kanban" data-original-title="Kanban"></button>
-                    <button type="button" onClick={() => this.props.app.Application.change_view_manager("form")} title="" className="btn btn-default fa fa-edit oe-cp-switch-form" data-original-title="Form"></button>
-                </div>
+                <CPToolBarPager app={this.app} />
+                <CPToolBarSwitchButton app={this.app} />
             </div>
         );
     }
@@ -469,5 +481,6 @@ class ViewManager extends Component{
 
 module.exports = {ViewManager: Pp(ViewManager), MainMenu: Pp(MainMenu), MenuItem: Pp(MenuItem),
     ControlPanel: Pp(ControlPanel), CPFilter: Pp(CPFilter), CPToolBar: Pp(CPToolBar), CPButton: Pp(CPButton),
+    CPToolBarPager: Pp(CPToolBarPager), CPToolBarSwitchButton: Pp(CPToolBarSwitchButton),
     CPSearchView: Pp(CPSearchView), CPTitle: Pp(CPTitle),
     Application: Pp(Application), LeftBar: Pp(LeftBar), Container: Pp(Container), Pp: Pp}
