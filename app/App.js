@@ -101,7 +101,7 @@ class App extends Component {
         );
     }
 }
-App.propTypes = {
-    name: PropTypes.string, children: PropTypes.element.isRequired
-};
+// App.propTypes = {
+//     name: PropTypes.string, children: PropTypes.element.isRequired
+// };
 module.exports = {App: Pp(App)}

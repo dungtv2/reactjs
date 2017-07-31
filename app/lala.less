@@ -16,11 +16,6 @@ body{
   padding: 0px;
   margin: 0px;
 }
-a{
-  color: #337ab7;
-  text-decoration: none;
-  background-color: transparent;
-}
 a:hover{
   cursor: pointer;
 }
@@ -117,6 +112,15 @@ li{
   }
 }
 
+.nav{
+  padding-left: 0px;
+  margin-bottom: 0px;
+  list-style: none;
+  .li{
+    display: block;
+  }
+}
+
 #app-container{
   display: flex;
   #app-left{
@@ -124,7 +128,22 @@ li{
     width: 220px;
     border-right: 1px solid #afafb6;
     position: relative;
-    flex-grow: 0
+    flex-grow: 0;
+    ul {
+      padding-left: 0px;
+    }
+    li a{
+      padding: 6px 4px 2px 18px;
+      color: #4c4c4c;
+      display: block;
+    }
+    li.active{
+      background-color: #7c7bad;
+      border-radius: 0;
+    }
+    li.active a{
+      color: white !important;
+    }
   }
   #app-application{
     width: 100%;

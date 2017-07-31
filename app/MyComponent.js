@@ -150,30 +150,6 @@ function MyReducer(state, action){
 }
 var store = createStore(MyReducer, defaultState, applyMiddleware(thunkMiddleware, loggerMiddleware));
 
-class MainMenu extends Component {
-    constructor(props){
-        super(props);
-        this.onClickMenu = this.onClickMenu.bind(this);
-    }
-    onClickMenu(item){
-        this.$el.find("li").removeClass("active");
-    }
-    render() {
-        return (
-            <nav id="nav-main">
-                <div className="navbar-header"></div>
-                <div className="navbar-collapse collapse">
-                    <ul className="nav">
-                        {Object.keys(this.app.App.menu).map((k) =>
-                            <MenuItem app={this.app} key={k.toString()} item={this.app.App.menu[k]} />
-                        )}
-                    </ul>
-                </div>
-            </nav>
-        )
-    }
-}
-
 class MenuItem extends Component {
     constructor(props){
         super(props);
@@ -201,6 +177,34 @@ class MenuItem extends Component {
     }
 }
 
+MenuItem = Pp(MenuItem)
+
+class MainMenu extends Component {
+    constructor(props){
+        super(props);
+        this.onClickMenu = this.onClickMenu.bind(this);
+    }
+    onClickMenu(item){
+        this.$el.find("li").removeClass("active");
+    }
+    render() {
+        return (
+            <nav id="nav-main">
+                <div className="navbar-header"></div>
+                <div className="navbar-collapse collapse">
+                    <ul className="nav">
+                        {Object.keys(this.app.App.menu).map((k) =>
+                            <MenuItem app={this.app} key={k.toString()} item={this.app.App.menu[k]} />
+                        )}
+                    </ul>
+                </div>
+            </nav>
+        )
+    }
+}
+
+MainMenu = Pp(MainMenu)
+
 class Container extends Component {
     constructor(props) {
         super(props);
@@ -223,6 +227,8 @@ class Container extends Component {
     }
 }
 
+Container = Pp(Container)
+
 class LeftBar extends Component {
     constructor(props) {
         super(props)
@@ -243,6 +249,8 @@ class LeftBar extends Component {
     }
 }
 
+LeftBar = Pp(LeftBar)
+
 class Application extends Component {
     constructor(props) {
         super(props);
@@ -261,6 +269,8 @@ class Application extends Component {
     }
 }
 
+Application = Pp(Application)
+
 class CPTitle extends Component {
     constructor(props){
         super(props);
@@ -275,6 +285,8 @@ class CPTitle extends Component {
         );
     }
 }
+
+CPTitle = Pp(CPTitle)
 
 class CPSearchView extends Component {
     constructor(props){
@@ -295,6 +307,8 @@ class CPSearchView extends Component {
     }
 }
 
+CPSearchView = Pp(CPSearchView)
+
 class CPButton extends Component {
     constructor(props){
         super(props);
@@ -308,6 +322,8 @@ class CPButton extends Component {
         );
     }
 }
+
+CPButton = Pp(CPButton)
 
 class CPToolBarPager extends Component {
     constructor(props){
@@ -327,6 +343,8 @@ class CPToolBarPager extends Component {
         );
     }
 }
+
+CPToolBarPager = Pp(CPToolBarPager)
 
 class CPToolBarSwitchButton extends Component {
     constructor(props) {
@@ -352,6 +370,8 @@ class CPToolBarSwitchButton extends Component {
     }
 }
 
+CPToolBarSwitchButton = Pp(CPToolBarSwitchButton)
+
 class CPToolBar extends Component {
     constructor(props){
         super(props);
@@ -365,6 +385,8 @@ class CPToolBar extends Component {
         );
     }
 }
+
+CPToolBar = Pp(CPToolBar)
 
 class CPFilter extends Component {
     constructor(props){
@@ -414,6 +436,8 @@ class CPFilter extends Component {
     }
 }
 
+CPFilter = Pp(CPFilter)
+
 class ControlPanel extends Component{
     constructor(props){
         super(props);
@@ -447,6 +471,8 @@ class ControlPanel extends Component{
     }
 }
 
+ControlPanel = Pp(ControlPanel)
+
 class ViewManager extends Component{
     constructor(props){
         super(props)
@@ -478,9 +504,13 @@ class ViewManager extends Component{
     }
 }
 
+ViewManager = Pp(ViewManager)
 
-module.exports = {ViewManager: Pp(ViewManager), MainMenu: Pp(MainMenu), MenuItem: Pp(MenuItem),
-    ControlPanel: Pp(ControlPanel), CPFilter: Pp(CPFilter), CPToolBar: Pp(CPToolBar), CPButton: Pp(CPButton),
-    CPToolBarPager: Pp(CPToolBarPager), CPToolBarSwitchButton: Pp(CPToolBarSwitchButton),
-    CPSearchView: Pp(CPSearchView), CPTitle: Pp(CPTitle),
-    Application: Pp(Application), LeftBar: Pp(LeftBar), Container: Pp(Container), Pp: Pp}
+module.exports = {ViewManager: ViewManager,
+    ControlPanel: ControlPanel, CPFilter: CPFilter, CPToolBar: CPToolBar, CPButton: CPButton, MainMenu: MainMenu,
+    CPToolBarPager: CPToolBarPager, CPToolBarSwitchButton: CPToolBarSwitchButton, MenuItem: MenuItem,
+    CPSearchView: CPSearchView, CPTitle: CPTitle,
+    Application: Application, LeftBar: LeftBar, Container: Container, Pp: Pp}
+
+
+
