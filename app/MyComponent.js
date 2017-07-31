@@ -197,6 +197,14 @@ class MainMenu extends Component {
                             <MenuItem app={this.app} key={k.toString()} item={this.app.App.menu[k]} />
                         )}
                     </ul>
+                    <ul>
+                        <li className="dropdown">
+                            <a className="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                                <img className="oe_topbar_avatar" data-default-src="http://localhost:8666/web/static/src/img/user_menu_avatar.png" src="/static/src/icons/image.png" />
+                                    <span className="oe_topbar_name">GS Admin</span> <b class="caret"></b>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </nav>
         )

@@ -38,6 +38,7 @@ var mongoose = require('mongoose')
 //     console.log('Mongoose default connection disconnected');
 // });
 app.use("/static", express.static('app'))
+// app.use(express.static('app'))
 if (isDeveloping) {
     const compiler = webpack(config);
     const middleware = webpackMiddleware(compiler, {
