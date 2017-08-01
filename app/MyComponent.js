@@ -383,23 +383,29 @@ class CPButton extends Component {
         super(props);
     }
     __onAfterRender(){
-        this.$el.find(".app-buttons-create").css({display: "none"});
+        // do something not relation with state
+        // this.$el.find(".app-buttons-create").css({display: "none"});
+    }
+    hideButton(){
+        const current_view = this.app.App.state.current_view;
+        var html = ""
+        if (current_view === "tree"){
+            html = <span className={classNames("app-buttons-create")}>
+                        <button className="btn btn-sm btn-primary" onClick={this.btnLoadClick}>Create</button>
+                        <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Import</button>
+                   </span>
+        }else if(current_view == "form"){
+            html = <span className={classNames("app-buttons-create")}>
+                    <button className="btn btn-sm btn-default" onClick={this.btnLoadClick}>Edit</button>
+                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Create</button>
+                </span>
+        }
+        return html
     }
     render() {
         return (
             <div className="">
-                <span className={classNames("app-buttons-create")}>
-                    <button className="btn btn-sm btn-default" onClick={this.btnLoadClick}>Edit</button>
-                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Create</button>
-                </span>
-                <span className={classNames("app-buttons-create")}>
-                    <button className="btn btn-sm btn-primary" onClick={this.btnLoadClick}>Create</button>
-                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Import</button>
-                </span>
-                <span className={classNames("app-buttons-edit")}>
-                    <button className="btn btn-sm btn-default" onClick={this.btnLoadClick}>Save</button>
-                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Discard</button>
-                </span>
+                {this.hideButton.bind(this)()}
             </div>
         );
     }
