@@ -257,7 +257,7 @@ class Container extends Component {
     }
     onClickMenu(item) {
         // do something here
-        this.app.App.changeState(U(this.app.App.state, {current_child_menu: {$set: item.model}}));
+        this.app.App.changeState(U(this.app.App.state, {current_child_menu: {$set: item.model}, current_view: {$set: "tree"}}));
     }
     __onBeforeRender() {
         this.model = this.props.app.App.model_data[this.props.app.App.state.current_child_menu];
@@ -391,7 +391,8 @@ class CPButton extends Component {
         var html = ""
         if (current_view === "tree"){
             html = <span className={classNames("app-buttons-create")}>
-                        <button className="btn btn-sm btn-primary" onClick={this.btnLoadClick}>Create</button>
+                        <button className="btn btn-sm btn-primary"
+                                onClick={this.app.App.changeState(U(this.app.App.state, {current_view: {$set: "form"}}))}>Create</button>
                         <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Import</button>
                    </span>
         }else if(current_view == "form"){
