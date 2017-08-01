@@ -22,14 +22,6 @@ a:hover{
 html{
   height: 100%;
 }
-h1, h2, h3 {}
-ul, ol {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
-li{
-
-}
 @sasa: white;
 .mimi {
   color: @sasa;
@@ -49,14 +41,11 @@ li{
 .ml-5{
   margin-left: 5px;
 }
-.nav {
-  margin-bottom: 0px;
-  padding-left: 0px;
-  list-style: none;
+.mr-3{
+  margin-right: 3px;
 }
-.nav > li{
-  position: relative;
-  display: none;
+.mr-5{
+  margin-right: 5px;
 }
 .nav > li > a{
   position: relative;
@@ -110,16 +99,24 @@ li{
     padding-right: 15px;
     padding-left: 15px;
   }
-}
-
-.nav{
-  padding-left: 0px;
-  margin-bottom: 0px;
-  list-style: none;
-  .li{
-    display: block;
+  .app-mm-user{
+    float: right;
+    img{
+      width: 18px;
+      max-height: 18px;
+      margin-right: 3px;
+    }
+  }
+  .app-mm-menu{
+    float: left;
   }
 }
+//
+//.nav{
+//  .li{
+//    display: block;
+//  }
+//}
 
 #app-container{
   display: flex;
@@ -129,6 +126,15 @@ li{
     border-right: 1px solid #afafb6;
     position: relative;
     flex-grow: 0;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    display: flex;
+    .app-lb-logo{
+      text-align: center;
+      img{
+        margin: 14px 0px;
+      }
+    }
     ul {
       padding-left: 0px;
     }
@@ -163,11 +169,15 @@ li{
         .app-cp-title{
           .app-view-title{
             font-size: 18px;
-            padding: 8px 15px;
+            padding: 8px 15px 8px 0px;
+            list-style: none;
+            margin-bottom: 0px;
+            color: #777777;
           }
         }
         // --SearchView---
         .app-cp-search-view{
+          padding-top: 5px;
           .app-search-view{
             position: relative;
             .app-sv-unfold{
@@ -221,6 +231,9 @@ li{
   background-color: white;
   table{
     width: 100%;
+    tr:hover{
+      cursor: pointer;
+    }
     td, th{
       padding: 3px 6px;
       line-height: 18px;

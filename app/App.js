@@ -46,6 +46,7 @@ class App extends Component {
                            config: {title: "Configuration",
                                     field: {name: {string: "Name", type: "input", placeholder: "name not ok...", name: "namenot"},
                                             age: {string: "Age", type: "int", placeholder: "age not ok....", name: "agenot"}}}}
+        this.data_form = {1: {name: "Dung", age: 25}, 2: {name: "Linh", age: 22}}
         /*
         * current_nav_main: is current main menu (default is "home")
         * current_child_menu: is current Left Menu
@@ -57,12 +58,16 @@ class App extends Component {
     }
     __onBeforeRender() {
         // SET url
-        window.location.hash = "menu_name="+this.state.current_nav_main+";model="+this.state.current_child_menu+";view_type="+this.state.current_view;
+        let hash = "menu_name="+this.state.current_nav_main+"&model="+this.state.current_child_menu+"&view_type="+this.state.current_view;
+        if (this.state.active_id && this.state.current_view === 'form'){
+            hash += "&active_id="+this.state.active_id;
+        }
+        window.location.hash = hash;
     }
     readURL() {
         var self = this;
         var hash = window.location.hash || "#";
-        hash = hash.substring(1).split(";");
+        hash = hash.substring(1).split("&");
         hash.map(function (value) {
             value = value.split("=");
             if (value.length == 2) {
@@ -76,6 +81,11 @@ class App extends Component {
                     case "view_type":
                         self.state.current_view = value[1];
                         break;
+                    case "active_id":
+                        if (value[1]){
+                            self.state.active_id = value[1];
+                        }
+                        break;
                 }
             }
         })
@@ -84,7 +94,7 @@ class App extends Component {
         if (menu.isParent){
             this.menu[this.state.current_nav_main].active = "no-active";
             this.menu[menu.name].active = "active";
-            this.setState(U(this.state, {current_nav_main: {$set: menu.name}}));
+            this.setState(U(this.state, {current_nav_main: {$set: menu.name}, current_view: {$set: "tree"}}));
         }else{
             // do something here
         }

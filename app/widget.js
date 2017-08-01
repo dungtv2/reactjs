@@ -40,7 +40,9 @@ class FieldChar extends Component {
             <div className="form-group">
                 <div className="col-xs-6">
                     <label for={field.name}>{field.string}</label>
-                    <input className="form-control" id={field.name} type={field.name} placeholder={field.placeholder} />
+                    <input className="form-control" id={field.name} type={field.name}
+                           value={field.hasOwnProperty("value") ? field.value : false}
+                           placeholder={field.placeholder} />
                 </div>
             </div>
         )
@@ -72,6 +74,7 @@ class FormView extends React.Component {
     constructor(props) {
         super(props);
         this.render_field = this.render_field.bind(this);
+        this.view = true;
     }
     render_field(field){
         var html = <div></div>;
@@ -94,10 +97,19 @@ class FormView extends React.Component {
         this.data = this.props.app.App.model_data[this.props.app.App.state.current_child_menu];
         this.title = this.data.title;
         this.field = this.data.field;
+        const active_id = this.props.app.App.state.active_id;
+        if (active_id){
+            const value = this.props.app.App.data_form[active_id];
+            for (let k of Object.keys(this.field)){
+                if (value.hasOwnProperty(k)){
+                    this.field[k]['value'] = value[k];
+                }
+            }
+        }
     }
     render() {
         return (
-            <div ref= {(form) => this.form = form} className="app-view-form form-horizontal container">
+            <div className="app-view-form form-horizontal container">
                 {Object.keys(this.field).map((k) => this.render_field(this.field[k]))}
             </div>
         )
@@ -110,7 +122,7 @@ class TreeView extends React.Component {
     }
     render() {
         return (
-            <div ref= {(tree) => this.$el = tree} className="app-view-tree">
+            <div className="app-view-tree">
                 <table>
                     <TreeHead app={this.app} />
                     <TreeBody app={this.app} />
@@ -124,7 +136,7 @@ class TreeView extends React.Component {
 class TreeHead extends Component {
     constructor(props){
         super(props)
-        this.data = {id: "ID", name: "Name", age: "Age", country: "Country"}
+        this.data = {id: "Order Number", name: "Order Date", age: "Customer", country: "Salesperson"}
     }
     render() {
         return (
@@ -155,8 +167,8 @@ class TreeRow extends Component {
         super(props)
     }
     onClickItem() {
-        this.app.App.changeState(U(this.app.App.state, {active_id: {$set: this.data.id}}));
-        this.app.Application.change_view_manager("form")
+        this.app.App.changeState(U(this.app.App.state, {active_id: {$set: this.data.id}, current_view: {$set: "form"}}));
+        // this.app.Application.change_view_manager("form")
     }
     __onBeforeRender(){
         this.data = this.props.item;

@@ -37,7 +37,7 @@ var mongoose = require('mongoose')
 // mongoose.connection.on('disconnected', function () {
 //     console.log('Mongoose default connection disconnected');
 // });
-app.use("/static", express.static('app'))
+app.use("/static", express.static('app/static'))
 // app.use(express.static('app'))
 if (isDeveloping) {
     const compiler = webpack(config);
@@ -62,35 +62,35 @@ if (isDeveloping) {
         console.info("ABCCCCCCCCC")
         res.send("HELLO");
     });
-    app.get('/list', function (req, res, next){
-        console.log("bi")
-        res.send("bibi")
-        // Xixi.find({}, function(err, result){
-        //     if (err) throw err
-        //     res.send(result)
-        //     next()
-        // });
-        // next('route')
-        next()
-        console.log("hihi")
-    });
-    app.get('/list/:id', function (req, res, next) {
-        console.log(req['params']['id'])
-        res.end('mimi')
-        next()
-    });
-    app.get('/list', function (req, res, next) {
-        console.log("la")
-        res.end('lalalala')
-        next()
-    });
-    app.get('/list', function (err, req, res, next) {
-        res.status(500).send('Something broke!')
-    });
-    app.use(function (err, req, res, next){
-        console.error(err.stack)
-        res.status(500).send('Something broke!')
-    });
+    // app.get('/list', function (req, res, next){
+    //     console.log("bi")
+    //     res.send("bibi")
+    //     // Xixi.find({}, function(err, result){
+    //     //     if (err) throw err
+    //     //     res.send(result)
+    //     //     next()
+    //     // });
+    //     // next('route')
+    //     next()
+    //     console.log("hihi")
+    // });
+    // app.get('/list/:id', function (req, res, next) {
+    //     console.log(req['params']['id'])
+    //     res.end('mimi')
+    //     next()
+    // });
+    // app.get('/list', function (req, res, next) {
+    //     console.log("la")
+    //     res.end('lalalala')
+    //     next()
+    // });
+    // app.get('/list', function (err, req, res, next) {
+    //     res.status(500).send('Something broke!')
+    // });
+    // app.use(function (err, req, res, next){
+    //     console.error(err.stack)
+    //     res.status(500).send('Something broke!')
+    // });
     // app.use('/graphql', graphqlHTTP(async (req, res, graphQLParams) => ({
     //     schema: MyGraphQLSchema,
     //     rootValue: "",

@@ -6,7 +6,7 @@ import styleok from './ok.less';
 import styleok1 from './lala.less';
 import {createStore, applyMiddleware} from 'redux';
 import classNames from 'classnames';
-import {Button} from 'react-bootstrap';
+// import {Button} from 'react-bootstrap';
 var U = require('react-addons-update');
 var Q = require('q');
 var R = require('ramda');
@@ -177,7 +177,55 @@ class MenuItem extends Component {
     }
 }
 
-MenuItem = Pp(MenuItem)
+MenuItem = Pp(MenuItem);
+
+// Main Menu menu
+class MMMenu extends Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <ul className="nav app-mm-menu">
+                {Object.keys(this.app.App.menu).map((k) =>
+                    <MenuItem app={this.app} key={k.toString()} item={this.app.App.menu[k]} />
+                )}
+            </ul>
+        )
+    }
+}
+
+MMMenu = Pp(MMMenu)
+
+// Main Menu User
+class MMUser extends Component {
+    constructor(props){
+        super(props);
+    }
+    render () {
+        return (
+            <ul className="nav app-mm-user">
+                <li className="dropdown">
+                    <a className="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+                        <img src="/static/src/icons/image.png" />
+                        <span>GS Admin</span>
+                        <b className="caret"></b>
+                    </a>
+                    <ul className="dropdown-menu">
+                        <li><a data-menu="documentation" href="#">Documentation</a></li>
+                        <li><a data-menu="support" href="#">Support</a></li>
+                        <li><a data-menu="about" href="#">About</a></li>
+                        <li className="divider"></li>
+                        <li><a data-menu="settings" href="#">Preferences</a></li>
+                        <li><a data-menu="logout" href="#">Log out</a></li>
+                    </ul>
+                </li>
+            </ul>
+        )
+    }
+}
+
+MMUser = Pp(MMUser);
 
 class MainMenu extends Component {
     constructor(props){
@@ -192,19 +240,8 @@ class MainMenu extends Component {
             <nav id="nav-main">
                 <div className="navbar-header"></div>
                 <div className="navbar-collapse collapse">
-                    <ul className="nav">
-                        {Object.keys(this.app.App.menu).map((k) =>
-                            <MenuItem app={this.app} key={k.toString()} item={this.app.App.menu[k]} />
-                        )}
-                    </ul>
-                    <ul>
-                        <li className="dropdown">
-                            <a className="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
-                                <img className="oe_topbar_avatar" data-default-src="http://localhost:8666/web/static/src/img/user_menu_avatar.png" src="/static/src/icons/image.png" />
-                                    <span className="oe_topbar_name">GS Admin</span> <b class="caret"></b>
-                            </a>
-                        </li>
-                    </ul>
+                    <MMMenu app={this.app} />
+                    <MMUser app={this.app} />
                 </div>
             </nav>
         )
@@ -249,6 +286,9 @@ class LeftBar extends Component {
         var menu_child = this.app.App.menu[this.app.App.state.current_nav_main].child;
         return (
             <div id="app-left">
+                <a className="app-lb-logo" href="/web">
+                    <img src="http://localhost:8666/web/binary/company_logo?db=baskin_v1&amp;company=1" />
+                </a>
                 <ul>
                     {Object.keys(menu_child).map((k) => <MenuItem key={k} item={menu_child[k]} app={this.app} />)}
                 </ul>
@@ -317,15 +357,49 @@ class CPSearchView extends Component {
 
 CPSearchView = Pp(CPSearchView)
 
+class MyButton extends Component {
+    constructor(props){
+        super(props);
+        this.type = {default: "btn-default", primary: "btn-primary"}
+    }
+    onClickButton() {
+
+    }
+    __onBeforeRender() {
+        this.data = this.props.data || {};
+    }
+    render() {
+        return (
+            <button className={classNames("mr-5 btn btn-sm1", this.type[this.data.type || "default"])}
+                    onClick={this.onClickButton}>{this.data.string || ""}</button>
+        );
+    }
+}
+
+MyButton = Pp(MyButton)
+
 class CPButton extends Component {
     constructor(props){
         super(props);
     }
+    __onAfterRender(){
+        this.$el.find(".app-buttons-create").css({display: "none"});
+    }
     render() {
         return (
             <div className="">
-                <button className="btn btn-sm btn-primary" onClick={this.btnLoadClick}>Create</button>
-                <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Import</button>
+                <span className={classNames("app-buttons-create")}>
+                    <button className="btn btn-sm btn-default" onClick={this.btnLoadClick}>Edit</button>
+                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Create</button>
+                </span>
+                <span className={classNames("app-buttons-create")}>
+                    <button className="btn btn-sm btn-primary" onClick={this.btnLoadClick}>Create</button>
+                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Import</button>
+                </span>
+                <span className={classNames("app-buttons-edit")}>
+                    <button className="btn btn-sm btn-default" onClick={this.btnLoadClick}>Save</button>
+                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Discard</button>
+                </span>
             </div>
         );
     }
