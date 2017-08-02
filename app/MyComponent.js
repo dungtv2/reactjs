@@ -12,6 +12,7 @@ var Q = require('q');
 var R = require('ramda');
 // var update = require('react-update');
 
+const VIEW = {form: "form", tree: "tree"}
 
 
 import {createLogger} from 'redux-logger';
@@ -363,15 +364,15 @@ class MyButton extends Component {
         this.type = {default: "btn-default", primary: "btn-primary"}
     }
     onClickButton() {
-
+        this.data.onClick();
     }
     __onBeforeRender() {
         this.data = this.props.data || {};
     }
     render() {
         return (
-            <button className={classNames("mr-5 btn btn-sm1", this.type[this.data.type || "default"])}
-                    onClick={this.onClickButton}>{this.data.string || ""}</button>
+            <button className={classNames("mr-5 btn btn-sm", this.type[this.data.type || "default"])}
+                    onClick={this.onClickButton.bind(this)}>{this.data.string || ""}</button>
         );
     }
 }
@@ -386,27 +387,47 @@ class CPButton extends Component {
         // do something not relation with state
         // this.$el.find(".app-buttons-create").css({display: "none"});
     }
-    hideButton(){
-        const current_view = this.app.App.state.current_view;
-        var html = ""
-        if (current_view === "tree"){
-            html = <span className={classNames("app-buttons-create")}>
-                        <button className="btn btn-sm btn-primary"
-                                onClick={this.app.App.changeState(U(this.app.App.state, {current_view: {$set: "form"}}))}>Create</button>
-                        <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Import</button>
-                   </span>
-        }else if(current_view == "form"){
-            html = <span className={classNames("app-buttons-create")}>
-                    <button className="btn btn-sm btn-default" onClick={this.btnLoadClick}>Edit</button>
-                    <button className="btn btn-sm btn-default ml-5" onClick={this.btnLoadClick}>Create</button>
-                </span>
+    renderView(){
+        var self = this;
+        var data = {btn1: {}, btn2: {}};
+        var App = this.app.App;
+        switch (App.state.current_view){
+            case VIEW.form:
+                data = {btn1: {string: "Save"}, btn2: {string: "Discard"}};
+                switch (App.state.form_type){
+                    case App.form_type.view:
+                        data.btn1.string = "Edit";
+                        data.btn1.onClick = function () {
+                            App.changeState(U(App.state, {form_type: {$set: App.form_type.edit}}));
+                        }
+                        data.btn2.string = "Create";
+                        data.btn1.onClick = function () {
+                            App.changeState(U(App.state, {form_type: {$set: App.form_type.create}}));
+                        }
+                        break;
+                    case App.form_type.edit:
+                        break;
+                }
+                break;
+            case VIEW.tree:
+                let onClickBtn1 = function () {
+                    App.changeState(U(App.state, {current_view: {$set: "form"}, form_type: {$set: App.form_type.create}}));
+                }
+                let onClickBtn2 = function () {
+                }
+                data = {btn1: {string: "Create", type: "primary", onClick: onClickBtn1},
+                        btn2: {string: "Import", onClick: onClickBtn2}};
+                break;
         }
-        return html
+        return <span className={classNames("app-buttons-create")}>
+                    <MyButton data={data.btn1} />
+                    <MyButton data={data.btn2} />
+               </span>
     }
     render() {
         return (
             <div className="">
-                {this.hideButton.bind(this)()}
+                {this.renderView.bind(this)()}
             </div>
         );
     }

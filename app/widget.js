@@ -41,7 +41,7 @@ class FieldChar extends Component {
                 <div className="col-xs-6">
                     <label for={field.name}>{field.string}</label>
                     <input className="form-control" id={field.name} type={field.name}
-                           value={field.hasOwnProperty("value") ? field.value : false}
+                           value={field.hasOwnProperty("value") ? field.value : ""}
                            placeholder={field.placeholder} />
                 </div>
             </div>
@@ -70,11 +70,12 @@ class Selection extends React.Component {
     }
 }
 
-class FormView extends React.Component {
+class FormView extends Component {
     constructor(props) {
         super(props);
         this.render_field = this.render_field.bind(this);
-        this.view = true;
+        this.type = {view: "view", edit: "edit", create: "create"};
+        this.state = {type: this.type.view}
     }
     render_field(field){
         var html = <div></div>;

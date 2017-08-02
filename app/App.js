@@ -52,8 +52,9 @@ class App extends Component {
         * current_child_menu: is current Left Menu
         * current_view: is current View Manager (default is tree view)
         * */
+        this.form_type = {view: "view", edit: "edit", create: "create"}
         this.state = {current_nav_main: "home", current_child_menu: "home", current_view: "tree",
-                      active_id: false, active_model: ""};
+                      active_id: false, active_model: "", form_type: this.form_type.create};
         this.readURL();
     }
     __onBeforeRender() {
