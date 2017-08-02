@@ -382,13 +382,34 @@ MyButton = Pp(MyButton)
 class CPButton extends Component {
     constructor(props){
         super(props);
+        this.onClickButtonSave = this.onClickButtonSave.bind(this);
+        this.onClickButtonCreate = this.onClickButtonCreate.bind(this);
+        this.onClickButtonEdit = this.onClickButtonEdit.bind(this);
+        this.onClickButtonDiscard = this.onClickButtonDiscard.bind(this);
+        this.onClickButtonImport = this.onClickButtonImport.bind(this);
     }
     __onAfterRender(){
         // do something not relation with state
         // this.$el.find(".app-buttons-create").css({display: "none"});
     }
+    onClickButtonSave(){
+
+    }
+    onClickButtonCreate(){
+        var App = this.app.App;
+        App.changeState(U(App.state, {form_type: {$set: App.form_type.create}}));
+    }
+    onClickButtonEdit(){
+        var App = this.app.App;
+        App.changeState(U(App.state, {form_type: {$set: App.form_type.edit}}));
+    }
+    onClickButtonDiscard(){
+
+    }
+    onClickButtonImport(){
+
+    }
     renderView(){
-        var self = this;
         var data = {btn1: {}, btn2: {}};
         var App = this.app.App;
         switch (App.state.current_view){
@@ -397,26 +418,20 @@ class CPButton extends Component {
                 switch (App.state.form_type){
                     case App.form_type.view:
                         data.btn1.string = "Edit";
-                        data.btn1.onClick = function () {
-                            App.changeState(U(App.state, {form_type: {$set: App.form_type.edit}}));
-                        }
+                        data.btn1.onClick = this.onClickButtonEdit;
                         data.btn2.string = "Create";
-                        data.btn1.onClick = function () {
-                            App.changeState(U(App.state, {form_type: {$set: App.form_type.create}}));
-                        }
+                        data.btn2.onClick = this.onClickButtonCreate;
                         break;
                     case App.form_type.edit:
                         break;
                 }
                 break;
             case VIEW.tree:
-                let onClickBtn1 = function () {
-                    App.changeState(U(App.state, {current_view: {$set: "form"}, form_type: {$set: App.form_type.create}}));
-                }
-                let onClickBtn2 = function () {
-                }
-                data = {btn1: {string: "Create", type: "primary", onClick: onClickBtn1},
-                        btn2: {string: "Import", onClick: onClickBtn2}};
+                // let onClickBtn1 = function () {
+                //     App.changeState(U(App.state, {current_view: {$set: "form"}, form_type: {$set: App.form_type.create}}));
+                // }
+                data = {btn1: {string: "Create", type: "primary", onClick: this.onClickButtonCreate},
+                        btn2: {string: "Import", onClick: this.onClickButtonImport}};
                 break;
         }
         return <span className={classNames("app-buttons-create")}>
