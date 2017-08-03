@@ -53,6 +53,13 @@ html{
   padding: 10px 15px;
   line-height: 20px;
 }
+// ----------------Overwrite Bootstrap---------
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+  background-color: transparent;
+  border: 0px;
+  border-radius: 0px;
+  box-shadow: none;
+}
 // ----------------Menu Main-------------------
 #app {
   height: 100%;
@@ -226,6 +233,19 @@ html{
 
 // -----------------Widget-------------------
 // 1. FormView
+#form{
+  background: url('/static/src/image/form_sheetbg.png');
+  padding: 16px 0px;
+  border-bottom: 1px solid #ddd;
+  .app-view-form{
+    background-color: white;
+    border: 1px solid #c8c8d3;
+    -moz-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding-top: 16px;
+  }
+}
 // 2. TreeView
 .app-view-tree{
   background-color: white;

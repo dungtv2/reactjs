@@ -38,11 +38,14 @@ class App extends Component {
                     settings: {label: "Settings", display: "block", href: "/settings", active: "", name: "settings", isParent: true,
                             child: []}};
         this.model_data = {home: {title: "Home",
+                                  tabs: {tab1: {label: "Order Line", active: "active"}, tab2: {label: "Other", active: "no-active"}},
                                   field: {name: {string: "Name", type: "input", placeholder: "Name...", name: "name"},
                                           age: {string: "Age", type: "int", placeholder: "age...", name: "age"}}},
                            user: {title: "User",
+                                  tabs: {tab1: {label: "Order Line", active: "active"}, tab2: {label: "Other", active: "no-active"}},
                                   field: {name: {string: "Name", type: "input", placeholder: "name ok ....", name: "nameok"},
-                                          age: {string: "Age", type: "int", placeholder: "age ok .....", name: "ageok"}}},
+                                          age: {string: "Age", type: "int", placeholder: "age ok .....", name: "ageok"},
+                                          address: {tab: "tab1", string: "Address", type: "input", placeholder: "address...", name: "address"}}},
                            config: {title: "Configuration",
                                     field: {name: {string: "Name", type: "input", placeholder: "name not ok...", name: "namenot"},
                                             age: {string: "Age", type: "int", placeholder: "age not ok....", name: "agenot"}}}}

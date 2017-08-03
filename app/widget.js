@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Pp } from './Base.js'
 import U from 'react-addons-update';
+import classNames from 'classnames';
 
 class FieldChar extends Component {
     constructor(props){
@@ -40,9 +41,16 @@ class FieldChar extends Component {
             <div className="form-group">
                 <div className="col-xs-6">
                     <label for={field.name}>{field.string}</label>
-                    <input className="form-control" id={field.name} type={field.name}
-                           value={field.hasOwnProperty("value") ? field.value : ""}
-                           placeholder={field.placeholder} />
+                    {field.readOnly ?
+                        <input readOnly="true" className="form-control" id={field.name}
+                               type={field.name}
+                               value={field.hasOwnProperty("value") ? field.value : ""}
+                               placeholder={field.placeholder}/> :
+                        <input className="form-control" id={field.name}
+                               type={field.name}
+                               value={field.hasOwnProperty("value") ? field.value : ""}
+                               placeholder={field.placeholder}/>
+                    }
                 </div>
             </div>
         )
@@ -70,40 +78,84 @@ class Selection extends React.Component {
     }
 }
 
+class Tab extends Component{
+    constructor(props){
+        super(props);
+    }
+    render(){
+        this.tabs = this.props.tabs;
+        return (
+            <div>
+                <ul className="nav nav-tabs">
+                    {Object.keys(this.tabs).map((k)=>
+                        <li key={k} className={classNames(this.tabs[k].active)}>
+                            <a data-toggle="tab" href={"#"+k}>{this.tabs[k].label}</a>
+                        </li>
+                    )}
+                </ul>
+                <div className="tab-content">
+                    {Object.keys(this.tabs).map((k)=>
+                        <div k={k} id={k} className={classNames("tab-pane fade", this.tabs[k].active === "active" ? "in active" : "")}>
+                            <label>{this.tabs[k].label}</label>
+                        </div>
+                    )}
+                </div>
+            </div>
+        )
+    }
+}
+
 class FormView extends Component {
     constructor(props) {
         super(props);
         this.render_field = this.render_field.bind(this);
-        this.type = {view: "view", edit: "edit", create: "create"};
-        this.state = {type: this.type.view}
     }
     render_field(field){
-        var html = <div></div>;
-        var input = new Set();
-        var select = new Set();
-        var text = new Set();
-        input.add("input").add("password").add("integer").add("int").add("email");
-        select.add("selection").add("select");
-        text.add("text").add("textarea");
-        if (input.has(field.type)){
-            html = <FieldChar key={field.name} app={this.app} field={field} />;
-        }else if (select.has(field.type)){
-            html = <Selection key={field.name} app={this.app} field={field} />;
-        }else if (text.has(field.type)){
-            html = <TextArea key={field.name} app={this.app} field={field} />;
+        var html = "";
+        if (field.hasOwnProperty("tab")){
+
+        }else {
+            let input = new Set();
+            let select = new Set();
+            let text = new Set();
+            input.add("input").add("password").add("integer").add("int").add("email");
+            select.add("selection").add("select");
+            text.add("text").add("textarea");
+            if (input.has(field.type)) {
+                html = <FieldChar key={field.name} app={this.app} field={field}/>;
+            } else if (select.has(field.type)) {
+                html = <Selection key={field.name} app={this.app} field={field}/>;
+            } else if (text.has(field.type)) {
+                html = <TextArea key={field.name} app={this.app} field={field}/>;
+            }
+        }
+        return html;
+    }
+    render_tabs(){
+        var html = "";
+        if (this.data.hasOwnProperty("tabs")){
+            html = <Tab key= tabs={this.data.tabs} />
         }
         return html;
     }
     __onBeforeRender(){
+        var App = this.props.app.App;
         this.data = this.props.app.App.model_data[this.props.app.App.state.current_child_menu];
         this.title = this.data.title;
         this.field = this.data.field;
-        const active_id = this.props.app.App.state.active_id;
+        this.form_type = App.form_type;
+        this.type = this.props.app.App.state.form_type;
+        const active_id = App.state.active_id;
         if (active_id){
             const value = this.props.app.App.data_form[active_id];
             for (let k of Object.keys(this.field)){
                 if (value.hasOwnProperty(k)){
                     this.field[k]['value'] = value[k];
+                }
+                if (this.type === this.form_type.view){
+                    this.field[k]['readOnly'] = true;
+                }else{
+                    delete this.field[k].readOnly;
                 }
             }
         }
@@ -112,6 +164,7 @@ class FormView extends Component {
         return (
             <div className="app-view-form form-horizontal container">
                 {Object.keys(this.field).map((k) => this.render_field(this.field[k]))}
+                {this.render_tabs.bind(this)()}
             </div>
         )
     }
@@ -168,7 +221,8 @@ class TreeRow extends Component {
         super(props)
     }
     onClickItem() {
-        this.app.App.changeState(U(this.app.App.state, {active_id: {$set: this.data.id}, current_view: {$set: "form"}}));
+        this.app.App.changeState(U(this.app.App.state, {active_id: {$set: this.data.id},
+                                                        current_view: {$set: "form"}, form_type: {$set: "view"}}));
         // this.app.Application.change_view_manager("form")
     }
     __onBeforeRender(){

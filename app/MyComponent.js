@@ -388,26 +388,27 @@ class CPButton extends Component {
         this.onClickButtonDiscard = this.onClickButtonDiscard.bind(this);
         this.onClickButtonImport = this.onClickButtonImport.bind(this);
     }
-    __onAfterRender(){
-        // do something not relation with state
-        // this.$el.find(".app-buttons-create").css({display: "none"});
-    }
     onClickButtonSave(){
-
+        let App = this.app.App;
+        this.app.App.changeState(U(App.state, {form_type: {$set: App.form_type.view}}))
     }
-    onClickButtonCreate(){
-        var App = this.app.App;
-        App.changeState(U(App.state, {form_type: {$set: App.form_type.create}}));
+    onClickButtonCreate(fromForm=true){
+        let App = this.app.App;
+        let newState = U(App.state, {form_type: {$set: App.form_type.create}});
+        if (fromForm){
+            newState.current_view = VIEW.form;
+        }
+        this.app.App.changeState(newState)
     }
     onClickButtonEdit(){
-        var App = this.app.App;
-        App.changeState(U(App.state, {form_type: {$set: App.form_type.edit}}));
+        let App = this.app.App;
+        this.app.App.changeState(U(App.state, {form_type: {$set: App.form_type.edit}}));
     }
     onClickButtonDiscard(){
-
+        alert("Discard")
     }
     onClickButtonImport(){
-
+        alert("Import");
     }
     renderView(){
         var data = {btn1: {}, btn2: {}};
@@ -423,21 +424,23 @@ class CPButton extends Component {
                         data.btn2.onClick = this.onClickButtonCreate;
                         break;
                     case App.form_type.edit:
+                        data.btn1.onClick = this.onClickButtonSave;
+                        data.btn2.onClick = this.onClickButtonSave;
                         break;
                 }
                 break;
             case VIEW.tree:
-                // let onClickBtn1 = function () {
-                //     App.changeState(U(App.state, {current_view: {$set: "form"}, form_type: {$set: App.form_type.create}}));
-                // }
                 data = {btn1: {string: "Create", type: "primary", onClick: this.onClickButtonCreate},
                         btn2: {string: "Import", onClick: this.onClickButtonImport}};
                 break;
         }
-        return <span className={classNames("app-buttons-create")}>
+        return <span>
                     <MyButton data={data.btn1} />
                     <MyButton data={data.btn2} />
                </span>
+    }
+    __onBeforeRender() {
+        // do something else before render view
     }
     render() {
         return (
@@ -445,6 +448,10 @@ class CPButton extends Component {
                 {this.renderView.bind(this)()}
             </div>
         );
+    }
+    __onAfterRender(){
+        // do something not relation with state
+        // this.$el.find(".app-buttons-create").css({display: "none"});
     }
 }
 
