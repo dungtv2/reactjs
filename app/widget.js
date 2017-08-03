@@ -82,6 +82,11 @@ class Tab extends Component{
     constructor(props){
         super(props);
     }
+    _render_field_tab(k){
+        if (this.app.FormView.field_tab.hasOwnProperty(k)){
+            return this.app.FormView.field_tab[k].map((field) => this.app.FormView.render_field(field, true))
+        }
+    }
     render(){
         this.tabs = this.props.tabs;
         return (
@@ -96,7 +101,7 @@ class Tab extends Component{
                 <div className="tab-content">
                     {Object.keys(this.tabs).map((k)=>
                         <div k={k} id={k} className={classNames("tab-pane fade", this.tabs[k].active === "active" ? "in active" : "")}>
-                            <label>{this.tabs[k].label}</label>
+                            {this._render_field_tab.bind(this)(k)}
                         </div>
                     )}
                 </div>
@@ -105,15 +110,21 @@ class Tab extends Component{
     }
 }
 
+Tab = Pp(Tab);
+
 class FormView extends Component {
     constructor(props) {
         super(props);
         this.render_field = this.render_field.bind(this);
     }
-    render_field(field){
+    render_field(field, force_tab=false){
         var html = "";
-        if (field.hasOwnProperty("tab")){
-
+        if (field.hasOwnProperty("tab") && !force_tab){
+            if (this.field_tab.hasOwnProperty(field.tab)){
+                this.field_tab[field.tab].push(field);
+            }else {
+                this.field_tab[field.tab] = [field];
+            }
         }else {
             let input = new Set();
             let select = new Set();
@@ -134,7 +145,7 @@ class FormView extends Component {
     render_tabs(){
         var html = "";
         if (this.data.hasOwnProperty("tabs")){
-            html = <Tab key= tabs={this.data.tabs} />
+            html = <Tab app={this.app} tabs={this.data.tabs} />
         }
         return html;
     }
@@ -143,6 +154,7 @@ class FormView extends Component {
         this.data = this.props.app.App.model_data[this.props.app.App.state.current_child_menu];
         this.title = this.data.title;
         this.field = this.data.field;
+        this.field_tab = {};
         this.form_type = App.form_type;
         this.type = this.props.app.App.state.form_type;
         const active_id = App.state.active_id;
