@@ -9,54 +9,43 @@ class FieldChar extends Component {
         // this.kind = new Set();
         // this.kind.add("default").add("help").add("sizing");
         // this.get_kind = this.get_kind.bind(this);
+        //
+        // <div className="form-group">
+        //     <div className="col-xs-6">
+        //         <label for={field.name}>{field.string}</label>
+        //         {field.readOnly ?
+        //             <input readOnly="true" id={field.name}
+        //                    type={field.name}
+        //                    value={field.hasOwnProperty("value") ? field.value : ""}
+        //                    placeholder={field.placeholder}/> :
+        //             <input id={field.name}
+        //                    type={field.name}
+        //                    value={field.hasOwnProperty("value") ? field.value : ""}
+        //                    placeholder={field.placeholder}/>
+        //         }
+        //     </div>
+        // </div>
     }
-    // get_kind(){
-    //     var field = this.props.field;
-    //     var html = <div></div>;
-    //     if (this) {
-    //         html =<div className="form-group">
-    //             <label className="control-label col-sm-2" for={field.name}>{field.label}</label>
-    //             <div className="col-sm-10">
-    //                 <input type={field.name} className="form-control" id={field.name} placeholder={field.placeholder}/>
-    //             </div>
-    //         </div>
-    //     }else if(this){
-    //         html = <div className="form-group">
-    //             <div className="col-xs-4">
-    //                 <label for={field.name}>{field.label}</label>
-    //                 <input className="form-control" id={field.name} type={field.name} placeholder={field.placeholder} />
-    //             </div>
-    //         </div>
-    //     }else if(this) {
-    //         html = <div className="form-group">
-    //             <label for={field.name}>{field.label}</label>
-    //             <input type={field.name} className="form-control" id={field.name} placeholder={field.placeholder}/>
-    //             <span className="help-block">This is some help text...</span>
-    //         </div>
-    //     }
-    // }
     render() {
         var field = this.props.field;
         return (
-            <div className="form-group">
-                <div className="col-xs-6">
-                    <label for={field.name}>{field.string}</label>
+            <div style={{padding: "5px 15px 5px 0px"}}>
+                    {field.hasOwnProperty("tab") ? "" : <label style={{fontWeight: "bold"}}>{field.string}</label>}
                     {field.readOnly ?
-                        <input readOnly="true" className="form-control" id={field.name}
+                        <input style={{width: "100%"}} readOnly="true" id={field.name}
                                type={field.name}
                                value={field.hasOwnProperty("value") ? field.value : ""}
                                placeholder={field.placeholder}/> :
-                        <input className="form-control" id={field.name}
+                        <input style={{width: "100%"}} id={field.name}
                                type={field.name}
                                value={field.hasOwnProperty("value") ? field.value : ""}
                                placeholder={field.placeholder}/>
                     }
-                </div>
             </div>
         )
     }
 }
-class TextArea extends React.Component {
+class TextArea extends Component {
     render() {
         var field = this.props.field;
         return (
@@ -67,7 +56,7 @@ class TextArea extends React.Component {
         )
     }
 }
-class Selection extends React.Component {
+class Selection extends Component {
     __onBeforeRender(){
         this.field = this.props.field;
     }
@@ -82,9 +71,23 @@ class Tab extends Component{
     constructor(props){
         super(props);
     }
-    _render_field_tab(k){
-        if (this.app.FormView.field_tab.hasOwnProperty(k)){
-            return this.app.FormView.field_tab[k].map((field) => this.app.FormView.render_field(field, true))
+    _render_group_in_tab(tab, group_key, group){
+        var field_tab = this.app.FormView.field_tab;
+        if (field_tab.hasOwnProperty(tab)){
+            if (field_tab[tab].hasOwnProperty(group_key)){
+                let fields = field_tab[tab][group_key];
+                return  <table style={{float: "left", width: "50%"}}>
+                            <tr>
+                                <td colSpan={2}><label className="app-group-title">{group.label}</label></td>
+                            </tr>
+                            {fields.map((field) =>
+                                <tr>
+                                    <td style={{fontWeight: "bold"}}>{field.string}</td>
+                                    <td>{this.app.FormView.render_field(field, true)}</td>
+                                </tr>
+                            )}
+                        </table>
+            }
         }
     }
     render(){
@@ -101,7 +104,7 @@ class Tab extends Component{
                 <div className="tab-content">
                     {Object.keys(this.tabs).map((k)=>
                         <div k={k} id={k} className={classNames("tab-pane fade", this.tabs[k].active === "active" ? "in active" : "")}>
-                            {this._render_field_tab.bind(this)(k)}
+                            {Object.keys(this.tabs[k].groups || {}).map((g_k) => this._render_group_in_tab.bind(this)(k, g_k, this.tabs[k].groups[g_k]))}
                         </div>
                     )}
                 </div>
@@ -121,9 +124,14 @@ class FormView extends Component {
         var html = "";
         if (field.hasOwnProperty("tab") && !force_tab){
             if (this.field_tab.hasOwnProperty(field.tab)){
-                this.field_tab[field.tab].push(field);
+                if (this.field_tab[field.tab].hasOwnProperty(field.group)){
+                    this.field_tab[field.tab][field.group].push(field);
+                }else{
+                    this.field_tab[field.tab][field.group] = [field]
+                }
             }else {
-                this.field_tab[field.tab] = [field];
+                this.field_tab[field.tab] = {};
+                this.field_tab[field.tab][field.group] = [field];
             }
         }else {
             let input = new Set();
@@ -182,7 +190,7 @@ class FormView extends Component {
     }
 }
 
-class TreeView extends React.Component {
+class TreeView extends Component {
     constructor(props){
         super(props);
     }

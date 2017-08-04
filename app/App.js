@@ -37,18 +37,27 @@ class App extends Component {
                     },
                     settings: {label: "Settings", display: "block", href: "/settings", active: "", name: "settings", isParent: true,
                             child: []}};
+
+
         this.model_data = {home: {title: "Home",
                                   tabs: {tab1: {label: "Order Line", active: "active"}, tab2: {label: "Other", active: "no-active"}},
                                   field: {name: {string: "Name", type: "input", placeholder: "Name...", name: "name"},
                                           age: {string: "Age", type: "int", placeholder: "age...", name: "age"}}},
                            user: {title: "User",
-                                  tabs: {tab1: {label: "Order Line", active: "active"}, tab2: {label: "Other", active: "no-active"}},
+                                  tabs: {tab1: {label: "Order Line", active: "active", groups: {group1: {label: "Group 1"}, group2: {label: "Group 2"}, group3: {label: "Group 3"}}},
+                                         tab2: {label: "Other", active: "no-active"}},
                                   field: {name: {string: "Name", type: "input", placeholder: "name ok ....", name: "nameok"},
                                           age: {string: "Age", type: "int", placeholder: "age ok .....", name: "ageok"},
-                                          address: {tab: "tab1", string: "Address", type: "input", placeholder: "address...", name: "address"}}},
+                                          address: {tab: "tab1", group: "group1", string: "Address", type: "input", placeholder: "address...", name: "address"},
+                                          zip: {tab: "tab1", group: "group2", string: "Zip", type: "input", placeholder: "zip...", name: "zip"},
+                                          birthday: {tab: "tab1", group: "group3", string: "Birthday", type: "input", placeholder: "Birthday...", name: "birthday"},
+                                          Sex: {tab: "tab1", group: "group3", string: "Sex", type: "input", placeholder: "sex...", name: "sex"},
+                                          country: {tab: "tab2", group: "group1", string: "Country", type: "input", placeholder: "country...", name: "country"}}},
                            config: {title: "Configuration",
                                     field: {name: {string: "Name", type: "input", placeholder: "name not ok...", name: "namenot"},
                                             age: {string: "Age", type: "int", placeholder: "age not ok....", name: "agenot"}}}}
+
+
         this.data_form = {1: {name: "Dung", age: 25}, 2: {name: "Linh", age: 22}}
         /*
         * current_nav_main: is current main menu (default is "home")
