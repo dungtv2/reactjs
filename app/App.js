@@ -44,6 +44,7 @@ class App extends Component {
                                   field: {name: {string: "Name", type: "input", placeholder: "Name...", name: "name"},
                                           age: {string: "Age", type: "int", placeholder: "age...", name: "age"}}},
                            user: {title: "User",
+                                  master: {groups: {group1: {label: "Master1"}, group2: {label: "Master2"}}},
                                   tabs: {tab1: {label: "Order Line", active: "active", groups: {group1: {label: "Group 1"}, group2: {label: "Group 2"}, group3: {label: "Group 3"}}},
                                          tab2: {label: "Other", active: "no-active"}},
                                   field: {name: {string: "Name", type: "input", placeholder: "name ok ....", name: "nameok"},
