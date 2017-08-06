@@ -26,6 +26,9 @@ html{
 .mimi {
   color: @sasa;
 }
+.left{
+  float: left !important;
+}
 .block{
   display: block !important;
 }
@@ -55,6 +58,11 @@ html{
   display: block;
   padding: 10px 15px;
   line-height: 20px;
+}
+input[readonly]{
+  border: 0px;
+  border-radius: 0px;
+  box-shadow: none;
 }
 // ----------------Overwrite Bootstrap---------
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
@@ -247,6 +255,10 @@ html{
     -webkit-box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     padding-top: 16px;
+  }
+  .app-form-nav-tabs, .app-form-tab-content{
+    float: left;
+    width: 100%;
   }
 }
 // 2. TreeView

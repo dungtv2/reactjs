@@ -6,41 +6,19 @@ import classNames from 'classnames';
 class FieldChar extends Component {
     constructor(props){
         super(props);
-        // this.kind = new Set();
-        // this.kind.add("default").add("help").add("sizing");
-        // this.get_kind = this.get_kind.bind(this);
-        //
-        // <div className="form-group">
-        //     <div className="col-xs-6">
-        //         <label for={field.name}>{field.string}</label>
-        //         {field.readOnly ?
-        //             <input readOnly="true" id={field.name}
-        //                    type={field.name}
-        //                    value={field.hasOwnProperty("value") ? field.value : ""}
-        //                    placeholder={field.placeholder}/> :
-        //             <input id={field.name}
-        //                    type={field.name}
-        //                    value={field.hasOwnProperty("value") ? field.value : ""}
-        //                    placeholder={field.placeholder}/>
-        //         }
-        //     </div>
-        // </div>
     }
     render() {
         var field = this.props.field;
+        var attr = {defaultValue: field.value || field.default}
+        if (field.readOnly){
+            attr.readOnly = field.readOnly;
+        }
+        // {field.tab || field.group ? "" : <label style={{fontWeight: "bold"}}>{field.string}</label>}
         return (
             <div style={{padding: "5px 15px 5px 0px"}}>
-                    {field.hasOwnProperty("tab") ? "" : <label style={{fontWeight: "bold"}}>{field.string}</label>}
-                    {field.readOnly ?
-                        <input style={{width: "100%"}} readOnly="true" id={field.name}
-                               type={field.name}
-                               value={field.hasOwnProperty("value") ? field.value : ""}
-                               placeholder={field.placeholder}/> :
                         <input style={{width: "100%"}} id={field.name}
-                               type={field.name}
-                               value={field.hasOwnProperty("value") ? field.value : ""}
+                               type="input" {...attr}
                                placeholder={field.placeholder}/>
-                    }
             </div>
         )
     }
@@ -67,44 +45,69 @@ class Selection extends Component {
     }
 }
 
+class Group extends Component{
+    constructor(props){
+        super(props);
+    }
+    render(){
+        let groupWidth = this.props.groupWidth || 100;
+        return (<table style={{float: "left", width: groupWidth+"%"}}>
+                    <tbody>
+                        {this.props.label ? <tr>
+                            <td colSpan={2}><label className="app-group-title">{this.props.label}</label></td>
+                        </tr> : ""}
+                        {this.props.fields.map((field) => <tr key={field.name}>
+                                                    <td style={{fontWeight: "bold"}}>{field.string}</td>
+                                                    <td>{this.app.FormView.render_field(field)}</td>
+                                               </tr>)}
+                    </tbody>
+                </table>
+        );
+    }
+}
+
+Group = Pp(Group);
+
 class Tab extends Component{
     constructor(props){
         super(props);
     }
-    _render_group_in_tab(tab, group_key, group){
+    _render_group_in_tab(tab_key, group_key){
         var field_tab = this.app.FormView.field_tab;
-        if (field_tab.hasOwnProperty(tab)){
-            if (field_tab[tab].hasOwnProperty(group_key)){
-                let fields = field_tab[tab][group_key];
-                return  <table style={{float: "left", width: "50%"}}>
-                            <tr>
-                                <td colSpan={2}><label className="app-group-title">{group.label}</label></td>
-                            </tr>
-                            {fields.map((field) =>
-                                <tr>
-                                    <td style={{fontWeight: "bold"}}>{field.string}</td>
-                                    <td>{this.app.FormView.render_field(field, true)}</td>
-                                </tr>
-                            )}
-                        </table>
+        if (field_tab.hasOwnProperty(tab_key)){
+            if (field_tab[tab_key].hasOwnProperty(group_key)){
+                let group = this.tabs[tab_key].groups[group_key];
+                let group_width = 100;
+                if (this.tabs[tab_key].hasOwnProperty("col")){
+                    group_width = 100/this.tabs[tab_key].col;
+                }
+                return <Group key={tab_key+group_key} app={this.app} fields={field_tab[tab_key][group_key]} groupWidth={group_width} label={group.label} />
             }
         }
+    }
+    _render_field_no_group(tab_key){
+        var field_tab = this.app.FormView.field_tab;
+        if (field_tab.hasOwnProperty(tab_key) && field_tab[tab_key].__no_group){
+            return <Group app={this.app} fields={field_tab[tab_key].__no_group}/>
+        }
+        return null
     }
     render(){
         this.tabs = this.props.tabs;
         return (
             <div>
-                <ul className="nav nav-tabs">
+                <ul className="nav nav-tabs app-form-nav-tabs">
                     {Object.keys(this.tabs).map((k)=>
                         <li key={k} className={classNames(this.tabs[k].active)}>
                             <a data-toggle="tab" href={"#"+k}>{this.tabs[k].label}</a>
                         </li>
                     )}
                 </ul>
-                <div className="tab-content">
-                    {Object.keys(this.tabs).map((k)=>
-                        <div k={k} id={k} className={classNames("tab-pane fade", this.tabs[k].active === "active" ? "in active" : "")}>
-                            {Object.keys(this.tabs[k].groups || {}).map((g_k) => this._render_group_in_tab.bind(this)(k, g_k, this.tabs[k].groups[g_k]))}
+                <div className="tab-content app-form-tab-content">
+                    {Object.keys(this.tabs).map((tab)=>
+                        <div key={tab} id={tab} className={classNames("tab-pane fade", this.tabs[tab].active === "active" ? "in active" : "")}>
+                            {Object.keys(this.tabs[tab].groups || {}).map((group) => this._render_group_in_tab.bind(this)(tab, group))}
+                            {this._render_field_no_group.bind(this)(tab)}
                         </div>
                     )}
                 </div>
@@ -115,76 +118,116 @@ class Tab extends Component{
 
 Tab = Pp(Tab);
 
+class Test extends Component {
+    constructor(props){
+        super(props)
+    }
+    render(){
+        return (<div className="Test"></div>)
+    }
+}
+Test = Pp(Test)
 class FormView extends Component {
     constructor(props) {
         super(props);
         this.render_field = this.render_field.bind(this);
+        this.render_tabs_view = this.render_tabs_view.bind(this);
+        this.render_master_view = this.render_master_view.bind(this);
+        this.render_other_view = this.render_other_view.bind(this);
     }
-    render_field(field, force_tab=false){
+    render_field(field){
         var html = "";
-        if (field.hasOwnProperty("tab") && !force_tab){
-            if (this.field_tab.hasOwnProperty(field.tab)){
-                if (this.field_tab[field.tab].hasOwnProperty(field.group)){
-                    this.field_tab[field.tab][field.group].push(field);
-                }else{
-                    this.field_tab[field.tab][field.group] = [field]
+        let input = new Set();
+        let select = new Set();
+        let text = new Set();
+        input.add("input").add("password").add("integer").add("int").add("email");
+        select.add("selection").add("select");
+        text.add("text").add("textarea");
+        if (input.has(field.type)) {
+            html = <FieldChar key={field.name} app={this.app} field={field}/>;
+        } else if (select.has(field.type)) {
+            html = <Selection key={field.name} app={this.app} field={field}/>;
+        } else if (text.has(field.type)) {
+            html = <TextArea key={field.name} app={this.app} field={field}/>;
+        }
+        return html;
+    }
+    render_tabs_view(){
+        var html = "";
+        if (this.data.tabs){
+            html = <Tab key="tab" app={this.app} tabs={this.data.tabs} />
+        }
+        return html;
+    }
+    render_master_view(){
+        var group_width = 100;
+        if(this.data.master && this.data.master.col){
+            group_width = 100/this.data.master.col;
+        }
+        return Object.keys(this.field_master).map((k) => <Group key={k} groupWidth={group_width} app={this.app} fields={this.field_master[k]} />)
+    }
+    render_other_view() {
+        return <Group groupWidth={100} app={this.app} fields={this.field_other} />
+    }
+    __fill_field(){
+        for (let k of Object.keys(this.field)) {
+            let field = this.field[k];
+            if (field.hasOwnProperty("tab")){// push field tab to field_tab
+                if (this.field_tab.hasOwnProperty(field.tab)){
+                    if (field.hasOwnProperty("group")){
+                        if (this.field_tab[field.tab].hasOwnProperty(field.group)){
+                            this.field_tab[field.tab][field.group].push(field);
+                        }else{
+                            this.field_tab[field.tab][field.group] = [field]
+                        }
+                    }else{
+                        if (this.field_tab[field.tab].hasOwnProperty('__no_group')){
+                            this.field_tab[field.tab]['__no_group'].push(field);
+                        }else{
+                            this.field_tab[field.tab]['__no_group'] = [field];
+                        }
+                    }
+                }else {
+                    this.field_tab[field.tab] = {};
+                    if (field.hasOwnProperty("group")) {
+                        this.field_tab[field.tab][field.group] = [field];
+                    }else{
+                        if (this.field_tab[field.tab].hasOwnProperty('__no_group')){
+                            this.field_tab[field.tab]['__no_group'].push(field);
+                        }else{
+                            this.field_tab[field.tab]['__no_group'] = [field];
+                        }
+                    }
+                }
+            }else if(this.data.master.groups && field.hasOwnProperty("group")) { // push field to master
+                if (this.field_master.hasOwnProperty(field.group)) {
+                    this.field_master[field.group].push(field);
+                } else {
+                    this.field_master[field.group] = [field];
                 }
             }else {
-                this.field_tab[field.tab] = {};
-                this.field_tab[field.tab][field.group] = [field];
-            }
-        }else {
-            let input = new Set();
-            let select = new Set();
-            let text = new Set();
-            input.add("input").add("password").add("integer").add("int").add("email");
-            select.add("selection").add("select");
-            text.add("text").add("textarea");
-            if (input.has(field.type)) {
-                html = <FieldChar key={field.name} app={this.app} field={field}/>;
-            } else if (select.has(field.type)) {
-                html = <Selection key={field.name} app={this.app} field={field}/>;
-            } else if (text.has(field.type)) {
-                html = <TextArea key={field.name} app={this.app} field={field}/>;
+                this.field_other.push(field);
             }
         }
-        return html;
-    }
-    render_tabs(){
-        var html = "";
-        if (this.data.hasOwnProperty("tabs")){
-            html = <Tab app={this.app} tabs={this.data.tabs} />
-        }
-        return html;
     }
     __onBeforeRender(){
-        var App = this.props.app.App;
         this.data = this.props.app.App.model_data[this.props.app.App.state.current_child_menu];
-        this.title = this.data.title;
         this.field = this.data.field;
         this.field_tab = {};
-        this.form_type = App.form_type;
+        this.field_master = {};
+        this.field_other = [];
+        this.form_type = this.props.app.App.form_type;
         this.type = this.props.app.App.state.form_type;
-        const active_id = App.state.active_id;
-        if (active_id){
-            const value = this.props.app.App.data_form[active_id];
-            for (let k of Object.keys(this.field)){
-                if (value.hasOwnProperty(k)){
-                    this.field[k]['value'] = value[k];
-                }
-                if (this.type === this.form_type.view){
-                    this.field[k]['readOnly'] = true;
-                }else{
-                    delete this.field[k].readOnly;
-                }
-            }
-        }
+        // const active_id = App.state.active_id;
+        this.__fill_field.bind(this)();
     }
     render() {
         return (
             <div className="app-view-form form-horizontal container">
-                {Object.keys(this.field).map((k) => this.render_field(this.field[k]))}
-                {this.render_tabs.bind(this)()}
+                <Test>ABC</Test>
+                {this.render_master_view()}
+                {this.render_other_view()}
+                {this.render_tabs_view()}
             </div>
         )
     }
