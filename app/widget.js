@@ -149,48 +149,54 @@ class FormView extends Component {
         }
     }
     render_master_view = () => {
-        // this.field_master = R.sort((a, b) => a-b, this.field_master);
-        return Object.keys(this.field_master).map((k) => <Group key={k} width={100/this.data.master.col || 100}
-                                                                app={this.app} fields={this.field_master[k]} />)
+        let __no_group = null;
+        if (this.field_master.__no_group){
+            __no_group = <Group width={100} app={this.app} fields={this.field_master.__no_group} />;
+            delete this.field_master.__no_group;
+        }
+        var master_view = Object.keys(this.field_master).map((k) => <Group key={k} width={100/this.data.master.col || 100}
+                                                                           app={this.app} fields={this.field_master[k]} />)
+        master_view.push(__no_group);
+        return master_view;
     }
     __fill_field = () => {
         for (let k of Object.keys(this.field)) {
             let field = this.field[k];
-            if (field.hasOwnProperty("tab")){// push field tab to field_tab
+            if (field.tab){// push field tab to field_tab
                 if (this.field_tab.hasOwnProperty(field.tab)){
-                    if (field.hasOwnProperty("group")){
+                    if (field.group){
                         if (this.field_tab[field.tab].hasOwnProperty(field.group)){
                             this.field_tab[field.tab][field.group].push(field);
                         }else{
                             this.field_tab[field.tab][field.group] = [field]
                         }
                     }else{
-                        if (this.field_tab[field.tab].hasOwnProperty('__no_group')){
-                            this.field_tab[field.tab]['__no_group'].push(field);
+                        if (this.field_tab[field.tab].__no_group){
+                            this.field_tab[field.tab].__no_group.push(field);
                         }else{
-                            this.field_tab[field.tab]['__no_group'] = [field];
+                            this.field_tab[field.tab].__no_group = [field];
                         }
                     }
                 }else {
                     this.field_tab[field.tab] = {};
-                    if (field.hasOwnProperty("group")) {
+                    if (field.group) {
                         this.field_tab[field.tab][field.group] = [field];
                     }else{
-                        if (this.field_tab[field.tab].hasOwnProperty('__no_group')){
-                            this.field_tab[field.tab]['__no_group'].push(field);
+                        if (this.field_tab[field.tab].__no_group){
+                            this.field_tab[field.tab].__no_group.push(field);
                         }else{
-                            this.field_tab[field.tab]['__no_group'] = [field];
+                            this.field_tab[field.tab].__no_group = [field];
                         }
                     }
                 }
-            }else if(this.data.master.groups && field.hasOwnProperty("group")) { // push field to master
+            }else if(this.data.master.groups && field.group) { // push field to master
                 if (this.field_master.hasOwnProperty(field.group)) {
                     this.field_master[field.group].push(field);
                 } else {
                     this.field_master[field.group] = [field];
                 }
             }else {
-                if(this.field_master.hasOwnProperty("__no_group")){
+                if(this.field_master.__no_group){
                     this.field_master.__no_group.push(field);
                 }else{
                     this.field_master.__no_group = [field];
