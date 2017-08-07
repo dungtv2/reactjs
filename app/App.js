@@ -11,7 +11,30 @@ var R = require('ramda');
 // var update = require('react-update');
 import {MainMenu, Container} from './MyComponent.js'
 import { Pp } from './Base.js'
+import {string, object, bool} from 'prop-types';
+// {tab: , group: , string: , type: , readOnly: , placeholder: , }
 
+
+export class Field extends Component{
+    state = {}
+    static propTypes = {
+        tab: string,
+        group: string,
+        string: string,
+        type: string,
+        readOnly: bool,
+        placeholder: string,
+    }
+    static defaultProps = {
+        type: 'input'
+    }
+    _prepare_render = () => {
+
+    }
+    render() {
+        return (<div>ABC</div>)
+    }
+}
 
 class App extends Component {
     constructor(props) {
@@ -48,15 +71,16 @@ class App extends Component {
                                   tabs: {tab1: {label: "Order Line", active: "active", col: 3,
                                                 groups: {group1: {label: "Group 1"}, group2: {label: "Group 2"}, group3: {label: "Group 3"}}},
                                          tab2: {label: "Other", active: "no-active"}},
+                                  // {tab: , group: , string: , type: , readOnly: , placeholder: , }
                                   field: {name: {group: "group1", string: "Name", type: "input", readOnly: true, placeholder: "name ok ....", name: "nameok"},
-                                          age: {string: "Age", type: "int", placeholder: "age ok .....", name: "ageok"},
+                                          age: {string: "Age", type: "int", placeholder: "age ok .....", name: "ageok", display: "block"},
                                           nothing: {group: "group2", string: "Nothing", type: "input", placeholder: "nothing .....", name: "nothing"},
                                           address: {tab: "tab1", group: "group1", string: "Address", type: "input", placeholder: "address...", name: "address"},
                                           zip: {tab: "tab1", group: "group2", string: "Zip", type: "input", placeholder: "zip...", name: "zip"},
                                           birthday: {tab: "tab1", group: "group3", string: "Birthday", type: "input", placeholder: "Birthday...", name: "birthday"},
                                           Sex: {tab: "tab1", group: "group3", string: "Sex", type: "input", default: "Male", placeholder: "sex...", name: "sex"},
                                           country: {tab: "tab2", group: "group1", string: "Country", type: "input", placeholder: "country...", name: "country"},
-                                          date: {tab: "tab1", string: "Date", type: "input", placeholder: "date...", name: "date"},
+                                          date: {tab: "tab1", string: "Date", type: "input", placeholder: "date...", name: "date", display: "block"},
                                   }},
                            config: {title: "Configuration",
                                     field: {name: {string: "Name", type: "input", placeholder: "name not ok...", name: "namenot"},

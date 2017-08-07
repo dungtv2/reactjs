@@ -13,16 +13,15 @@ class FieldChar extends Component {
         if (field.readOnly){
             attr.readOnly = field.readOnly;
         }
-        // {field.tab || field.group ? "" : <label style={{fontWeight: "bold"}}>{field.string}</label>}
         return (
             <div style={{padding: "5px 15px 5px 0px"}}>
-                        <input style={{width: "100%"}} id={field.name}
-                               type="input" {...attr}
-                               placeholder={field.placeholder}/>
+                {field.display === 'block' ? <label style={{fontWeight: "bold"}}>{field.string}</label> : ""}
+                <input style={{width: "100%"}} id={field.name} type="input" {...attr} placeholder={field.placeholder}/>
             </div>
         )
     }
 }
+
 class TextArea extends Component {
     render() {
         var field = this.props.field;
@@ -50,16 +49,20 @@ class Group extends Component{
         super(props);
     }
     render(){
-        let groupWidth = this.props.groupWidth || 100;
-        return (<table style={{float: "left", width: groupWidth+"%"}}>
+        let group = this.props.group || {};
+        return (<table style={{float: "left", width: (this.props.width || 100)+"%"}}>
                     <tbody>
-                        {this.props.label ? <tr>
-                            <td colSpan={2}><label className="app-group-title">{this.props.label}</label></td>
-                        </tr> : ""}
-                        {this.props.fields.map((field) => <tr key={field.name}>
-                                                    <td style={{fontWeight: "bold"}}>{field.string}</td>
-                                                    <td>{this.app.FormView.render_field(field)}</td>
-                                               </tr>)}
+                        {group.label ?
+                            <tr>
+                                <td colSpan={2}>
+                                    <label className="app-group-title">{group.label}</label>
+                                </td>
+                            </tr> : ""}
+                        {this.props.fields.map((field) =>
+                            <tr key={field.name}>
+                                <td className="app-group-label">{field.display != 'block' ? field.string : ""}</td>
+                                <td>{this.app.FormView.render_field(field)}</td>
+                            </tr>)}
                     </tbody>
                 </table>
         );
@@ -72,25 +75,26 @@ class Tab extends Component{
     constructor(props){
         super(props);
     }
-    _render_group_in_tab(tab_key, group_key){
+    _render_group_in_tab = (tab_key, group_key) => {
+        /*
+        * @param: - tab_key: key of tab
+        *         - group_key: key of group
+        * @description: This function render group in tab
+        * */
         var field_tab = this.app.FormView.field_tab;
-        if (field_tab.hasOwnProperty(tab_key)){
-            if (field_tab[tab_key].hasOwnProperty(group_key)){
-                let group = this.tabs[tab_key].groups[group_key];
-                let group_width = 100;
-                if (this.tabs[tab_key].hasOwnProperty("col")){
-                    group_width = 100/this.tabs[tab_key].col;
-                }
-                return <Group key={tab_key+group_key} app={this.app} fields={field_tab[tab_key][group_key]} groupWidth={group_width} label={group.label} />
-            }
+        if (field_tab.hasOwnProperty(tab_key) && field_tab[tab_key].hasOwnProperty(group_key)){
+            return <Group key={tab_key+group_key} app={this.app}
+                          fields={field_tab[tab_key][group_key]}
+                          width={100/this.tabs[tab_key].col || 100}
+                          group={this.tabs[tab_key].groups[group_key]} />
         }
     }
-    _render_field_no_group(tab_key){
+    _render_field_no_group = (tab_key) => {
+        // field no group always always render bottom
         var field_tab = this.app.FormView.field_tab;
         if (field_tab.hasOwnProperty(tab_key) && field_tab[tab_key].__no_group){
             return <Group app={this.app} fields={field_tab[tab_key].__no_group}/>
         }
-        return null
     }
     render(){
         this.tabs = this.props.tabs;
@@ -106,8 +110,8 @@ class Tab extends Component{
                 <div className="tab-content app-form-tab-content">
                     {Object.keys(this.tabs).map((tab)=>
                         <div key={tab} id={tab} className={classNames("tab-pane fade", this.tabs[tab].active === "active" ? "in active" : "")}>
-                            {Object.keys(this.tabs[tab].groups || {}).map((group) => this._render_group_in_tab.bind(this)(tab, group))}
-                            {this._render_field_no_group.bind(this)(tab)}
+                            {Object.keys(this.tabs[tab].groups || {}).map((group) => this._render_group_in_tab(tab, group))}
+                            {this._render_field_no_group(tab)}
                         </div>
                     )}
                 </div>
@@ -118,24 +122,11 @@ class Tab extends Component{
 
 Tab = Pp(Tab);
 
-class Test extends Component {
-    constructor(props){
-        super(props)
-    }
-    render(){
-        return (<div className="Test"></div>)
-    }
-}
-Test = Pp(Test)
 class FormView extends Component {
     constructor(props) {
         super(props);
-        this.render_field = this.render_field.bind(this);
-        this.render_tabs_view = this.render_tabs_view.bind(this);
-        this.render_master_view = this.render_master_view.bind(this);
-        this.render_other_view = this.render_other_view.bind(this);
     }
-    render_field(field){
+    render_field = (field) => {
         var html = "";
         let input = new Set();
         let select = new Set();
@@ -152,24 +143,17 @@ class FormView extends Component {
         }
         return html;
     }
-    render_tabs_view(){
-        var html = "";
+    render_tabs_view = () =>{
         if (this.data.tabs){
-            html = <Tab key="tab" app={this.app} tabs={this.data.tabs} />
+            return <Tab app={this.app} tabs={this.data.tabs} />
         }
-        return html;
     }
-    render_master_view(){
-        var group_width = 100;
-        if(this.data.master && this.data.master.col){
-            group_width = 100/this.data.master.col;
-        }
-        return Object.keys(this.field_master).map((k) => <Group key={k} groupWidth={group_width} app={this.app} fields={this.field_master[k]} />)
+    render_master_view = () => {
+        // this.field_master = R.sort((a, b) => a-b, this.field_master);
+        return Object.keys(this.field_master).map((k) => <Group key={k} width={100/this.data.master.col || 100}
+                                                                app={this.app} fields={this.field_master[k]} />)
     }
-    render_other_view() {
-        return <Group groupWidth={100} app={this.app} fields={this.field_other} />
-    }
-    __fill_field(){
+    __fill_field = () => {
         for (let k of Object.keys(this.field)) {
             let field = this.field[k];
             if (field.hasOwnProperty("tab")){// push field tab to field_tab
@@ -206,7 +190,12 @@ class FormView extends Component {
                     this.field_master[field.group] = [field];
                 }
             }else {
-                this.field_other.push(field);
+                if(this.field_master.hasOwnProperty("__no_group")){
+                    this.field_master.__no_group.push(field);
+                }else{
+                    this.field_master.__no_group = [field];
+                }
+
             }
         }
     }
@@ -215,18 +204,15 @@ class FormView extends Component {
         this.field = this.data.field;
         this.field_tab = {};
         this.field_master = {};
-        this.field_other = [];
         this.form_type = this.props.app.App.form_type;
         this.type = this.props.app.App.state.form_type;
         // const active_id = App.state.active_id;
-        this.__fill_field.bind(this)();
+        this.__fill_field();
     }
     render() {
         return (
             <div className="app-view-form form-horizontal container">
-                <Test>ABC</Test>
                 {this.render_master_view()}
-                {this.render_other_view()}
                 {this.render_tabs_view()}
             </div>
         )
@@ -301,7 +287,7 @@ class TreeRow extends Component {
     }
 }
 
-class TreeFoot extends React.Component {
+class TreeFoot extends Component {
     render() {
         return (
             <tfoot>
