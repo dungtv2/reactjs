@@ -36,20 +36,54 @@ export class Field extends Component{
     }
 }
 
-class ButtonUser extends Component {
+class User extends Component {
+    state = {}
+    defaultTypes = {
+        model: string,
+        master: object,
+        tabs: object,
+        field: object,
+    }
+    defaultProps = {
+        model: "users",
+        master: {col: 3, groups: {group1: {label: "Master1"}, group2: {label: "Master2"}}},
+        tabs: {tab1: {label: "Order Line", active: "active", col: 3,
+                      groups: {group1: {label: "Group 1"}, group2: {label: "Group 2"}, group3: {label: "Group 3"}}},
+               tab2: {label: "Other", active: "no-active"}},
+        field: {name: {group: "group1", string: "Name", type: "input", readOnly: true, placeholder: "name ok ....", name: "nameok"},
+                age: {string: "Age", type: "int", placeholder: "age ok .....", name: "ageok", display: "block"},
+                nothing: {group: "group2", string: "Nothing", type: "input", placeholder: "nothing .....", name: "nothing"},
+                address: {tab: "tab1", group: "group1", string: "Address", type: "input", placeholder: "address...", name: "address"},
+                zip: {tab: "tab1", group: "group2", string: "Zip", type: "input", placeholder: "zip...", name: "zip"},
+                birthday: {tab: "tab1", group: "group3", string: "Birthday", type: "input", placeholder: "Birthday...", name: "birthday"},
+                sex: {tab: "tab1", group: "group3", string: "Sex", type: "input", default: "Male", placeholder: "sex...", name: "sex"},
+                country: {tab: "tab2", group: "group1", string: "Country", type: "input", placeholder: "country...", name: "country"},
+                date: {tab: "tab1", string: "Date", type: "input", placeholder: "date...", name: "date", display: "block"},
+                state: {string: "State", selection: {draft: "Draft", confirm: "Confirm", done: 'Done'}, default: "draft"}
+        }
+    }
     constructor(props){
         super(props)
     }
+    btnConfirm = () => {
+        alert('Confirm');
+    }
+    btnValidate = () => {
+        alert('validate');
+    }
     render() {
-        return (<div>
-            <button>Confirm</button>
-        </div>)
+        return (
+            <div style={{float: "left", paddingLeft: "10px"}}>
+                <button onClick={this.btnConfirm} className="btn btn-sm btn-default">Confirm</button>
+                <button onClick={this.btnValidate} className="btn btn-sm btn-default ml-5">Validate</button>
+            </div>
+        )
     }
 }
 
 
 
-ButtonUser = Pp(ButtonUser);
+User = Pp(User);
 
 class App extends Component {
     constructor(props) {
@@ -97,7 +131,7 @@ class App extends Component {
                                           country: {tab: "tab2", group: "group1", string: "Country", type: "input", placeholder: "country...", name: "country"},
                                           date: {tab: "tab1", string: "Date", type: "input", placeholder: "date...", name: "date", display: "block"},
                                           state: {string: "State", selection: {draft: "Draft", confirm: "Confirm", done: 'Done'}, default: "draft"}
-                                  }, renderButton: <ButtonUser />},
+                                  }},
                            config: {title: "Configuration",
                                     field: {name: {string: "Name", type: "input", placeholder: "name not ok...", name: "namenot"},
                                             age: {string: "Age", type: "int", placeholder: "age not ok....", name: "agenot"}}}}
