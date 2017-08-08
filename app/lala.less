@@ -245,9 +245,37 @@ input[readonly]{
 // -----------------Widget-------------------
 // 1. FormView
 #form{
-  background: url('/static/src/image/form_sheetbg.png');
-  padding: 16px 0px;
-  border-bottom: 1px solid #ddd;
+  .app-form-header{
+    display: table;
+    width: 100%;
+    border-bottom: 1px solid #c8c8d3;
+    .app-form-button-bar{
+
+    }
+    .app-form-state-bar{
+      list-style: none;
+      float: right;
+      margin-bottom: 0px;
+      li{
+        display: inline-block;
+        padding: 7px 15px;
+        background-color: white;
+      }
+      li.active{
+        background-color: #7c7bad;
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+  .app-form-sheet{
+    background: url('/static/src/image/form_sheetbg.png');
+    padding: 16px 0px;
+    border-bottom: 1px solid #ddd;
+  }
+  .app-form-footer{
+
+  }
   .app-view-form{
     background-color: white;
     border: 1px solid #c8c8d3;

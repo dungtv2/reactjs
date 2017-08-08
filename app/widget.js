@@ -2,6 +2,30 @@ import React, { Component } from 'react';
 import { Pp } from './Base.js'
 import U from 'react-addons-update';
 import classNames from 'classnames';
+import {string, object, bool} from 'prop-types';
+
+
+export class Model extends Component{
+    user = {renderButton: function() {}}
+    home = {}
+    // static propTypes = {
+    //     tab: string,
+    //     group: string,
+    //     string: string,
+    //     type: string,
+    //     readOnly: bool,
+    //     placeholder: string,
+    // }
+    // static defaultProps = {
+    //     type: 'input'
+    // }
+    // _prepare_render = () => {
+    //
+    // }
+    // render() {
+    //     return (<div>ABC</div>)
+    // }
+}
 
 class FieldChar extends Component {
     constructor(props){
@@ -43,6 +67,98 @@ class Selection extends Component {
         )
     }
 }
+
+
+class FormFooter extends Component{
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (<div></div>);
+    }
+}
+
+FormFooter = Pp(FormFooter);
+
+class ButtonBar extends Component {
+    constructor(props){
+        super(props);
+    }
+    renderButton = () => {
+        if (this.app.FormView.data.renderButton){
+            return this.app.FormView.data.renderButton;
+        }
+    }
+    render(){
+        return (
+            <div className="app-form-button-bar">
+                {this.renderButton()}
+            </div>)
+    }
+}
+
+ButtonBar = Pp(ButtonBar);
+
+class StateBar extends Component {
+    constructor(props){
+        super(props);
+    }
+    render_view = () => {
+        var field = this.app.FormView.field;
+        if (field.state && field.state.selection){
+            return  <ul className="app-form-state-bar">
+                        {Object.keys(field.state.selection).map((k) =>
+                            <li k={k} className={classNames(k === field.state.default ? "active" : "")}>
+                                {field.state.selection[k]}
+                            </li>
+                        )}
+                    </ul>
+        }
+    }
+    render() {
+        return (
+            <div>
+                {this.render_view()}
+            </div>
+        )
+    }
+}
+
+StateBar = Pp(StateBar);
+
+class FormHeader extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (
+            <div className="app-form-header">
+                <ButtonBar app={this.app} />
+                <StateBar app={this.app} />
+            </div>
+        );
+    }
+}
+
+FormHeader = Pp(FormHeader)
+
+class FormSheet extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (
+            <div className="app-form-sheet">
+                <div className="app-view-form form-horizontal container">
+                    {this.app.FormView.render_master_view()}
+                    {this.app.FormView.render_tabs_view()}
+                </div>
+            </div>
+        )
+    }
+}
+
+FormSheet = Pp(FormSheet)
 
 class Group extends Component{
     constructor(props){
@@ -206,14 +322,14 @@ class FormView extends Component {
         this.field_master = {};
         this.form_type = this.props.app.App.form_type;
         this.type = this.props.app.App.state.form_type;
-        // const active_id = App.state.active_id;
         this.__fill_field();
     }
     render() {
         return (
-            <div className="app-view-form form-horizontal container">
-                {this.render_master_view()}
-                {this.render_tabs_view()}
+            <div>
+                <FormHeader app={this.app} />
+                <FormSheet app={this.app} />
+                <FormFooter app={this.app} />
             </div>
         )
     }

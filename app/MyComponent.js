@@ -625,7 +625,7 @@ class ViewManager extends Component{
     render() {
         return (
             <div className="app-view-manager">
-                <div className="app-vm-content" ref = "ok">
+                <div className="app-vm-content">
                     {Object.keys(this.get_view()).map((k) =>
                         <div key={k} id={k} className={this.props.app.App.state.current_view == k ? "block" : "none"}>
                             {this.store_view[k]}
