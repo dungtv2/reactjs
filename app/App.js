@@ -36,6 +36,21 @@ export class Field extends Component{
     }
 }
 
+class ButtonUser extends Component {
+    constructor(props){
+        super(props)
+    }
+    render() {
+        return (<div>
+            <button>Confirm</button>
+        </div>)
+    }
+}
+
+
+
+ButtonUser = Pp(ButtonUser);
+
 class App extends Component {
     constructor(props) {
         super(props);
@@ -81,7 +96,8 @@ class App extends Component {
                                           Sex: {tab: "tab1", group: "group3", string: "Sex", type: "input", default: "Male", placeholder: "sex...", name: "sex"},
                                           country: {tab: "tab2", group: "group1", string: "Country", type: "input", placeholder: "country...", name: "country"},
                                           date: {tab: "tab1", string: "Date", type: "input", placeholder: "date...", name: "date", display: "block"},
-                                  }},
+                                          state: {string: "State", selection: {draft: "Draft", confirm: "Confirm", done: 'Done'}, default: "draft"}
+                                  }, renderButton: <ButtonUser />},
                            config: {title: "Configuration",
                                     field: {name: {string: "Name", type: "input", placeholder: "name not ok...", name: "namenot"},
                                             age: {string: "Age", type: "int", placeholder: "age not ok....", name: "agenot"}}}}
