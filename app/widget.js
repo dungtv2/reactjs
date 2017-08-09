@@ -85,15 +85,14 @@ class ButtonBar extends Component {
         super(props);
     }
     renderButton = () => {
-        if (this.app.FormView.data.renderButton){
-            return this.app.FormView.data.renderButton;
-        }
+        return this.app.FormView.data;
     }
     render(){
         return (
             <div className="app-form-button-bar">
                 {this.renderButton()}
-            </div>)
+            </div>
+        )
     }
 }
 
@@ -260,8 +259,8 @@ class FormView extends Component {
         return html;
     }
     render_tabs_view = () =>{
-        if (this.data.tabs){
-            return <Tab app={this.app} tabs={this.data.tabs} />
+        if (this.data.props.tabs){
+            return <Tab app={this.app} tabs={this.data.props.tabs} />
         }
     }
     render_master_view = () => {
@@ -270,7 +269,7 @@ class FormView extends Component {
             __no_group = <Group width={100} app={this.app} fields={this.field_master.__no_group} />;
             delete this.field_master.__no_group;
         }
-        var master_view = Object.keys(this.field_master).map((k) => <Group key={k} width={100/this.data.master.col || 100}
+        var master_view = Object.keys(this.field_master).map((k) => <Group key={k} width={100/this.data.props.master.col || 100}
                                                                            app={this.app} fields={this.field_master[k]} />)
         master_view.push(__no_group);
         return master_view;
@@ -305,7 +304,7 @@ class FormView extends Component {
                         }
                     }
                 }
-            }else if(this.data.master.groups && field.group) { // push field to master
+            }else if(this.data.props.master.groups && field.group) { // push field to master
                 if (this.field_master.hasOwnProperty(field.group)) {
                     this.field_master[field.group].push(field);
                 } else {
@@ -323,7 +322,7 @@ class FormView extends Component {
     }
     __onBeforeRender(){
         this.data = this.props.app.App.model_data[this.props.app.App.state.current_child_menu];
-        this.field = this.data.field;
+        this.field = this.data.props.field;
         this.field_tab = {};
         this.field_master = {};
         this.form_type = this.props.app.App.form_type;
