@@ -4,29 +4,6 @@ import U from 'react-addons-update';
 import classNames from 'classnames';
 import {string, object, bool} from 'prop-types';
 
-
-export class Model extends Component{
-    user = {renderButton: function() {}}
-    home = {}
-    // static propTypes = {
-    //     tab: string,
-    //     group: string,
-    //     string: string,
-    //     type: string,
-    //     readOnly: bool,
-    //     placeholder: string,
-    // }
-    // static defaultProps = {
-    //     type: 'input'
-    // }
-    // _prepare_render = () => {
-    //
-    // }
-    // render() {
-    //     return (<div>ABC</div>)
-    // }
-}
-
 class FieldChar extends Component {
     constructor(props){
         super(props);

@@ -11,7 +11,8 @@ var R = require('ramda');
 // var update = require('react-update');
 import {MainMenu, Container} from './MyComponent.js'
 import { Pp } from './Base.js'
-import {string, object, bool} from 'prop-types';
+// PropTypes.array
+import {string, object, bool, array} from 'prop-types';
 // {tab: , group: , string: , type: , readOnly: , placeholder: , }
 
 
@@ -76,12 +77,14 @@ class Config extends Component {
 class User extends Component {
     state = {}
     static defaultTypes = {
+        view_mode: array,
         model: string,
         master: object,
         tabs: object,
         field: object,
     }
     static defaultProps = {
+        view_mode: ["form", "tree"],
         model: "users",
         master: {col: 3, groups: {group1: {label: "Master1"}, group2: {label: "Master2"}}},
         tabs: {tab1: {label: "Order Line", active: "active", col: 3,
