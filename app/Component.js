@@ -1,4 +1,6 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
+import ReactDOMServer from 'react-dom/server'
 import c from './Component.less';
 import { Pp } from './Base.js';
 var U = require('react-addons-update');
@@ -8,26 +10,283 @@ import GoogleMapLoader from "react-google-maps-loader"
 
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
 
-export class MapContainer extends Component {
+const mapStyles = {
+    container: {
+        position: 'absolute',
+        width: '97%',
+        height: '97%'
+
+    },
+    map: {
+        position: 'absolute',
+        left: 1,
+        right: 1,
+        bottom: 1,
+        top: 1
+    }
+};
+// position: absolute;
+// left: 0px;
+// right: 0px;
+// bottom: 0px;
+// top: 0px;
+// display: inherit;
+// overflow: hidden;
+
+//
+// height: 100%;
+// width: 100%;
+// position: absolute;
+// top: 0px;
+// left: 0px;
+// background-color: rgb(229, 227, 223);
+
+var eventName = ["click", "rightclick"]
+
+export class MyMarker extends Component {
+    static propTypes = {
+        position: PropTypes.object,
+        map: PropTypes.object
+    }
+    static defaultProps = {
+
+    }
+    componentDidUpdate(prevProps){
+        if ((prevProps.map !== this.props.map) || (this.props.position !== prevProps.position)){
+            this.renderMarker();
+        }
+    }
+    renderMarker = () => {
+        let {map, google, position, mapCenter} = this.props;
+        position = position || mapCenter;
+        position = new google.maps.LatLng(position.lat, position.lng);
+        const pref = {
+            map: map, position: position, label: "label",
+            title: "title",
+        }
+        this.marker = new google.maps.Marker(pref);
+        eventName.forEach(e => {
+            this.marker.addListener(e, this.handleEvent(e))
+        })
+        // google.maps.event.trigger(this.marker, 'onClick');
+    }
+    componentWillUnmount() {
+        if (this.marker){
+            this.marker.setMap(null);
+        }
+    }
+    handleEvent = (evtName) => {
+        return (e) => {
+            if (this.props[evtName]){
+                this.props[evtName](this.props, this.marker, e)
+            }
+        }
+    }
     render() {
+        return null;
+    }
+}
+
+export class MapLA extends Component {
+    static propTypes = {
+        initialCenter: PropTypes.object,
+        zoom: PropTypes.number,
+        google: PropTypes.object,
+        visible: PropTypes.bool,
+    }
+    static defaultProps = {
+        visible: true,
+        zoom: 14,
+        initialCenter: {lat: 22.0320496, lng:105.8411168},
+        onMove: function () {alert("a")}
+    }
+    constructor(props){
+        super(props);
+        const {lat, lng} = this.props.initialCenter;
+        this.state = {currentLocation: {lat: lat, lng: lng}};
+    }
+    componentDidMount(){
+        if (navigator && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((pos) => {
+                const coords = pos.coords;
+                console.log(coords);
+                this.setState({
+                    currentLocation: {
+                        lat: coords.latitude,
+                        lng: coords.longitude
+                    }
+                })
+            })
+        }
+        this.loadMap();
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.google !== this.props.google) {
+            this.loadMap();
+        }
+        if (prevState.currentLocation !== this.state.currentLocation) {
+            this.recenterMap();
+        }
+    }
+    recenterMap(){
+        const map = this.map;
+        const curr = this.state.currentLocation;
+
+        const google = this.props.google;
+        const maps = google.maps;
+        if (map) {
+            let center = new maps.LatLng(curr.lat, curr.lng);
+            map.panTo(center);
+        }
+    }
+    loadMap() {
+        if (this.props && this.props.google) {
+            // google is available
+            const {google} = this.props;
+            const maps = google.maps;
+
+            const mapRef = this.refs.map;
+            const node = ReactDOM.findDOMNode(mapRef);
+
+            let {initialCenter, zoom} = this.props;
+            const {lat, lng} = this.state.currentLocation;
+            const center = new maps.LatLng(lat, lng);
+            const mapConfig = Object.assign({}, {
+                center: center,
+                zoom: zoom
+            })
+            this.map = new maps.Map(node, mapConfig);
+            this.map.addListener('dragend', (evt) => {
+                this.props.onMove(this.map);
+            })
+            maps.event.trigger(this.map, 'ready');
+        }
+    }
+    renderChildren() {
+        const {children} = this.props;
+        if (!children) return;
+        return React.Children.map(children, c => {
+            return React.cloneElement(c, {
+                map: this.map,
+                google: this.props.google,
+                mapCenter: this.state.currentLocation,
+                position: this.state.currentLocation,
+            })
+        })
+    }
+    render() {
+        const style = Object.assign({}, mapStyles.map, this.props.style, {
+            display: this.props.visible ? 'inherit' : 'none'
+        });
         return (
-            <Map google={this.props.google} zoom={14}>
+            <div style={style} ref="map">
+                Loading map...
+                {this.renderChildren()}
+            </div>
+        )
+    }
+}
 
-                <Marker onClick={this.onMarkerClick}
-                        name={'Current location'} />
+export class MyInfoWindow extends Component {
+    componentDidUpdate(prevProps, prevState){
+        if (this.props.map !== prevProps.map){
+            this.renderInfoWindow();
+        }
+        if (this.props.position !== prevProps.position){
+            this.updatePosition();
+        }
+        if (this.props.children != prevProps.children) {
+            this.updateContent();
+        }
+    }
+    updateContent() {
+        const content = this.renderChildren();
+        if (this.myInfoWindow){
+            this.myInfoWindow.setContent(content);
+            this.myInfoWindow.open(this.props.map, this.props.marker);
+        }
+    }
+    onOpen(){
+        // alert("on Open")
+    }
+    onClose(){
+        // alert("on Close")
+    }
+    updatePosition(){
+        let {position, google} = this.props;
+        if (!(position instanceof google.maps.LatLng)){
+            position = position && new google.maps.LatLng(position.lat, position.lng);
+        }
+        this.myInfoWindow.setPosition(position);
+    }
+    renderChildren(){
+        const {children} = this.props;
+        return ReactDOMServer.renderToString(children);
+    }
+    renderInfoWindow(){
+        let {map, google, mapCenter} = this.props;
+        if (!google || !google.maps){
+            return;
+        }
+        const miw = this.myInfoWindow = new google.maps.InfoWindow({content: "hello"})
 
-                <InfoWindow onClose={this.onInfoWindowClose}>
-                    <div>
-                        <h1>{this.state.selectedPlace.name}</h1>
-                    </div>
-                </InfoWindow>
-            </Map>
+        google.maps.event.addListener(miw, 'closeclick', this.onClose.bind(this));
+        google.maps.event.addListener(miw, 'domready', this.onOpen.bind(this));
+    }
+    render(){
+        return null;
+    }
+}
+
+export class MapContainer extends Component {
+    constructor(props){
+        super(props);
+        this.state = {activeMarker: {}, selectedPlace: {}}
+    }
+    onMarkerClick = () => {
+        alert("Marker");
+    }
+    onInfoWindowClose = () => {
+        alert("close");
+    }
+    onRightClick = () => {
+        alert("Right Click")
+    }
+    onClickMarker = (props, marker, e) => {
+        this.setState(U(this.state, {activeMarker: {$set: props.marker}}))
+    }
+    onClickFindBtn = () => {
+        // this.$el.find("#find_location").val()
+        var geocoder = new this.props.google.maps.Geocoder()
+        geocoder.geocode({'address': "Ha Noi"}, function(results, status) {
+            // if (status == google.maps.GeocoderStatus.OK) {
+            var latitude = results[0].geometry.location.lat();
+            var longitude = results[0].geometry.location.lng();
+            alert(latitude);
+            // }
+        });
+    }
+    render() {
+        const style = {width: '500px', height: '500px', position: 'relative'}
+        return (
+            <div id="ok" style={style} ref={(item) => {this.$el = $(item)}}>
+                <input type="text" style={{position: "absolute", zIndex: 1000, left: "20px"}} id="find_location" />
+                <button style={{position: "absolute", zIndex: 1000}} onClick={this.onClickFindBtn.bind(this)}>Find</button>
+                <MapLA google={this.props.google}>
+                    <MyMarker click={this.onClickMarker} rightclick={this.onRightClick} />
+                    <MyInfoWindow marker={this.state.activeMarker}>
+                        <h1>Hello</h1>
+                    </MyInfoWindow>
+                </MapLA>
+            </div>
         );
     }
 }
 
-export default GoogleApiWrapper({
-    apiKey: ('AIzaSyDQxjAooOjVtVXe88dfgSAlIAr0Z4M9JKo')
+
+var OK = GoogleApiWrapper({
+    apiKey: ('AIzaSyDQxjAooOjVtVXe88dfgSAlIAr0Z4M9JKo'),
+    version: '3.25',
 })(MapContainer)
 
 //
@@ -196,39 +455,39 @@ class Main extends Component {
     constructor(props){
         super(props);
     }
-    scroll = () => {
-        var self = this;
-        $(window).scroll(function () {
-            var height = $(document).height();
-            if ((height - $(window).scrollTop() - $(window).height()) < height/10){
-                $(window).scrollTop = $(window).scrollTop() - height/10
-                self.$el.find(".row").append("<div><h4>Hello</h4></div>")
-            }
-        });
-    }
-    componentDidMount() {
-        // this.scroll();
-    }
+    // scroll = () => {
+    //     var self = this;
+    //     $(window).scroll(function () {
+    //         var height = $(document).height();
+    //         if ((height - $(window).scrollTop() - $(window).height()) < height/10){
+    //             $(window).scrollTop = $(window).scrollTop() - height/10
+    //             self.$el.find(".row").append("<div><h4>Hello</h4></div>")
+    //         }
+    //     });
+    // }
+    // componentDidMount() {
+    //     // this.scroll();
+    // }
     render(){
-        const location = {
-            lat: 40.7575285,
-            lng: -73.9884469
-        }
-        const markers = [
-            {
-                location: {
-                    lat: 40.7575285,
-                    lng: -73.9884469
-                }
-            }
-        ]
+        // const location = {
+        //     lat: 40.7575285,
+        //     lng: -73.9884469
+        // }
+        // const markers = [
+        //     {
+        //         location: {
+        //             lat: 40.7575285,
+        //             lng: -73.9884469
+        //         }
+        //     }
+        // ]
             // <Map center={location} markers={markers} />
         return (
             <main>
                 <div id="wrap">
                     <div className="container" style={{paddingTop: "188px"}}>
                         <div className="row" style={{height: "500px"}}>
-                            <GoogleApiWrapper />
+                            <OK />
                         </div>
                     </div>
                 </div>
