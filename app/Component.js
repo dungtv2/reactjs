@@ -43,6 +43,121 @@ const mapStyles = {
 
 var eventName = ["click", "rightclick"]
 
+
+class MapSearch extends Component {
+    static propTypes = {
+        onClick: PropTypes.func
+    }
+    static defaultProps = {
+        onClick: () => {
+            return this.onClickFindLocation();
+        }
+    }
+    constructor(props){
+        super(props);
+    }
+    onClickFindLocation = () => {
+        alert("Finding....")
+    }
+    render() {
+        return (
+            <div class="su--map_search">
+                <input type="text" placeholder="Find location..." />
+                <button onClick={this.props.onClick}>Find</button>
+            </div>
+        )
+    }
+}
+
+MapSearch = Pp(MapSearch);
+
+class MapMarker extends Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return null;
+    }
+}
+
+MapMarker = Pp(MapMarker);
+
+class MapInfoWindow extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (
+            <div class="su--map_info">
+
+            </div>
+        )
+    }
+}
+
+MapInfoWindow = Pp(MapInfoWindow);
+
+class MapMap extends Component {
+    constructor(props){
+        super(props);
+    }
+    loadMap = () => {
+        const google = this.componentParent.props.google
+    }
+
+//     if (this.props && this.props.google) {
+//     // google is available
+//     const {google} = this.props;
+// const maps = google.maps;
+//
+// const mapRef = this.refs.map;
+// const node = ReactDOM.findDOMNode(mapRef);
+//
+// let {initialCenter, zoom} = this.props;
+// const {lat, lng} = this.state.currentLocation;
+// const center = new maps.LatLng(lat, lng);
+// const mapConfig = Object.assign({}, {
+//     center: center,
+//     zoom: zoom
+// })
+// this.map = new maps.Map(node, mapConfig);
+//
+// // maps.event.trigger(this.map, 'ready');
+// }
+    render() {
+        return (
+            <div class="su--map_map">
+
+            </div>
+        )
+    }
+}
+
+MapMap = Pp(MapMap);
+
+// class MapContainer extends Component {
+//     constructor(props){
+//         super(props);
+//     }
+//     render() {
+//         return (
+//             <div id="su--map_container">
+//                 <MapMap>
+//                     <MapSearch />
+//                     <MapMarker></MapMarker>
+//                     <MapInfoWindow></MapInfoWindow>
+//                 </MapMap>
+//             </div>
+//         )
+//     }
+// }
+//
+// MapContainer = Pp(MapContainer);
+
+
+
+
+
 export class MyMarker extends Component {
     static propTypes = {
         position: PropTypes.object,
@@ -57,12 +172,15 @@ export class MyMarker extends Component {
         }
     }
     renderMarker = () => {
+        if (this.marker){
+            this.marker.setMap(null);
+        }
         let {map, google, position, mapCenter} = this.props;
         position = position || mapCenter;
         position = new google.maps.LatLng(position.lat, position.lng);
         const pref = {
-            map: map, position: position, label: "label",
-            title: "title",
+            map: map,
+            position: position
         }
         this.marker = new google.maps.Marker(pref);
         eventName.forEach(e => {
@@ -87,6 +205,8 @@ export class MyMarker extends Component {
     }
 }
 
+MyMarker = Pp(MyMarker)
+
 export class MapLA extends Component {
     static propTypes = {
         initialCenter: PropTypes.object,
@@ -98,7 +218,6 @@ export class MapLA extends Component {
         visible: true,
         zoom: 14,
         initialCenter: {lat: 22.0320496, lng:105.8411168},
-        onMove: function () {alert("a")}
     }
     constructor(props){
         super(props);
@@ -124,7 +243,7 @@ export class MapLA extends Component {
         if (prevProps.google !== this.props.google) {
             this.loadMap();
         }
-        if (prevState.currentLocation !== this.state.currentLocation) {
+        if (prevState.currentLocation !== this.state.currentLocation || prevProps.position !== this.props.position) {
             this.recenterMap();
         }
     }
@@ -156,10 +275,8 @@ export class MapLA extends Component {
                 zoom: zoom
             })
             this.map = new maps.Map(node, mapConfig);
-            this.map.addListener('dragend', (evt) => {
-                this.props.onMove(this.map);
-            })
-            maps.event.trigger(this.map, 'ready');
+
+            // maps.event.trigger(this.map, 'ready');
         }
     }
     renderChildren() {
@@ -174,18 +291,35 @@ export class MapLA extends Component {
             })
         })
     }
+    onClickFindBtn = () => {
+        // this.$el.find("#find_location").val()
+        var self = this;
+        var geocoder = new this.props.google.maps.Geocoder()
+        geocoder.geocode({'address': this.$el.find("#find_location").val()}, function(results, status) {
+            var latitude = results[0].geometry.location.lat();
+            var longitude = results[0].geometry.location.lng();
+            self.setState(U(self.state, {currentLocation: {$set: {lat: latitude,lng: longitude}}}));
+            console.log(results)
+        });
+    }
     render() {
         const style = Object.assign({}, mapStyles.map, this.props.style, {
             display: this.props.visible ? 'inherit' : 'none'
         });
         return (
-            <div style={style} ref="map">
-                Loading map...
-                {this.renderChildren()}
+            <div id="map_container" ref={(item) => {this.$el = $(item)}}>
+                <input type="text" style={{position: "absolute", zIndex: 1000, left: "20px"}} id="find_location" />
+                <button style={{position: "absolute", zIndex: 1000}} onClick={this.onClickFindBtn.bind(this)}>Find</button>
+                <div style={style} ref="map">
+                    Loading map...
+                    {this.renderChildren()}
+                </div>
             </div>
         )
     }
 }
+
+MapLA = Pp(MapLA)
 
 export class MyInfoWindow extends Component {
     componentDidUpdate(prevProps, prevState){
@@ -238,6 +372,8 @@ export class MyInfoWindow extends Component {
     }
 }
 
+MyInfoWindow = Pp(MyInfoWindow)
+
 export class MapContainer extends Component {
     constructor(props){
         super(props);
@@ -270,8 +406,6 @@ export class MapContainer extends Component {
         const style = {width: '500px', height: '500px', position: 'relative'}
         return (
             <div id="ok" style={style} ref={(item) => {this.$el = $(item)}}>
-                <input type="text" style={{position: "absolute", zIndex: 1000, left: "20px"}} id="find_location" />
-                <button style={{position: "absolute", zIndex: 1000}} onClick={this.onClickFindBtn.bind(this)}>Find</button>
                 <MapLA google={this.props.google}>
                     <MyMarker click={this.onClickMarker} rightclick={this.onRightClick} />
                     <MyInfoWindow marker={this.state.activeMarker}>
@@ -284,10 +418,10 @@ export class MapContainer extends Component {
 }
 
 
-var OK = GoogleApiWrapper({
+var OK = Pp(GoogleApiWrapper({
     apiKey: ('AIzaSyDQxjAooOjVtVXe88dfgSAlIAr0Z4M9JKo'),
     version: '3.25',
-})(MapContainer)
+})(Pp(MapContainer)))
 
 //
 // var x = document.getElementById("demo");
@@ -468,6 +602,9 @@ class Main extends Component {
     // componentDidMount() {
     //     // this.scroll();
     // }
+    componentWillMount() {
+        console.log("a")
+    }
     render(){
         // const location = {
         //     lat: 40.7575285,
@@ -527,6 +664,7 @@ Footer = Pp(Footer)
 
 
 class App extends Component {
+    static root = true
     constructor(props){
         super(props);
     }
@@ -535,20 +673,13 @@ class App extends Component {
             <div id="app" style={{paddingBottom: '510px'}}>
                 <Header />
                 <Main />
+                <Main />
+                <Footer />
                 <Footer />
             </div>
         );
-        // return (
-        //     <div id="app">
-        //         <Header />
-        //         <Main />
-        //         <Footer />
-        //     </div>
-        // );
     }
 }
 
 
-
-
-module.exports = {App: App}
+module.exports = {App: Pp(App)}
