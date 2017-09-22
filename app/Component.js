@@ -61,7 +61,7 @@ class MapSearch extends Component {
     }
     render() {
         return (
-            <div class="su--map_search">
+            <div className="su--map_search" style={{position: "absolute", zIndex: 1000}}>
                 <input type="text" placeholder="Find location..." />
                 <button onClick={this.props.onClick}>Find</button>
             </div>
@@ -71,69 +71,145 @@ class MapSearch extends Component {
 
 MapSearch = Pp(MapSearch);
 
-class MapMarker extends Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return null;
-    }
-}
-
-MapMarker = Pp(MapMarker);
-
-class MapInfoWindow extends Component {
-    constructor(props){
-        super(props);
-    }
-    render() {
-        return (
-            <div class="su--map_info">
-
-            </div>
-        )
-    }
-}
-
-MapInfoWindow = Pp(MapInfoWindow);
-
-class MapMap extends Component {
-    constructor(props){
-        super(props);
-    }
-    loadMap = () => {
-        const google = this.componentParent.props.google
-    }
-
-//     if (this.props && this.props.google) {
-//     // google is available
-//     const {google} = this.props;
-// const maps = google.maps;
-//
-// const mapRef = this.refs.map;
-// const node = ReactDOM.findDOMNode(mapRef);
-//
-// let {initialCenter, zoom} = this.props;
-// const {lat, lng} = this.state.currentLocation;
-// const center = new maps.LatLng(lat, lng);
-// const mapConfig = Object.assign({}, {
-//     center: center,
-//     zoom: zoom
-// })
-// this.map = new maps.Map(node, mapConfig);
-//
-// // maps.event.trigger(this.map, 'ready');
+// class MapMarker extends Component {
+//     constructor(props) {
+//         super(props);
+//     }
+//     render() {
+//         return null;
+//     }
 // }
-    render() {
-        return (
-            <div class="su--map_map">
+//
+// MapMarker = Pp(MapMarker);
+//
+// class MapInfoWindow extends Component {
+//     constructor(props){
+//         super(props);
+//     }
+//     render() {
+//         return (
+//             <div class="su--map_info">
+//
+//             </div>
+//         )
+//     }
+// }
+//
+// MapInfoWindow = Pp(MapInfoWindow);
 
-            </div>
-        )
-    }
-}
+// export class MapMap extends Component {
+//     static propTypes = {
+//         initialCenter: PropTypes.object,
+//         zoom: PropTypes.number,
+//         google: PropTypes.object,
+//         visible: PropTypes.bool,
+//     }
+//     static defaultProps = {
+//         visible: true,
+//         zoom: 14,
+//         initialCenter: {lat: 22.0320496, lng:105.8411168},
+//     }
+//     constructor(props){
+//         super(props);
+//         const {lat, lng} = this.props.initialCenter;
+//         this.state = {currentLocation: {lat: lat, lng: lng}};
+//     }
+//     componentDidMount(){
+//         if (navigator && navigator.geolocation) {
+//             navigator.geolocation.getCurrentPosition((pos) => {
+//                 const coords = pos.coords;
+//                 console.log(coords);
+//                 this.setState({
+//                     currentLocation: {
+//                         lat: coords.latitude,
+//                         lng: coords.longitude
+//                     }
+//                 })
+//             })
+//         }
+//         this.loadMap();
+//     }
+//     componentDidUpdate(prevProps, prevState) {
+//         if (prevProps.google !== this.props.google) {
+//             this.loadMap();
+//         }
+//         if (prevState.currentLocation !== this.state.currentLocation || prevProps.position !== this.props.position) {
+//             this.recenterMap();
+//         }
+//     }
+//     recenterMap(){
+//         const map = this.map;
+//         const curr = this.state.currentLocation;
+//
+//         const google = this.props.google;
+//         const maps = google.maps;
+//         if (map) {
+//             let center = new maps.LatLng(curr.lat, curr.lng);
+//             map.panTo(center);
+//         }
+//     }
+//     loadMap() {
+//         if (this.props && this.props.google) {
+//             // google is available
+//             const {google} = this.props;
+//             const maps = google.maps;
+//
+//             const mapRef = this.refs.map;
+//             const node = ReactDOM.findDOMNode(mapRef);
+//
+//             let {initialCenter, zoom} = this.props;
+//             const {lat, lng} = this.state.currentLocation;
+//             const center = new maps.LatLng(lat, lng);
+//             const mapConfig = Object.assign({}, {
+//                 center: center,
+//                 zoom: zoom
+//             })
+//             this.map = new maps.Map(node, mapConfig);
+//
+//             // maps.event.trigger(this.map, 'ready');
+//         }
+//     }
+//     renderChildren() {
+//         const {children} = this.props;
+//         if (!children) return;
+//         return React.Children.map(children, c => {
+//             return React.cloneElement(c, {
+//                 map: this.map,
+//                 google: this.props.google,
+//                 mapCenter: this.state.currentLocation,
+//                 position: this.state.currentLocation,
+//             })
+//         })
+//     }
+//     onClickFindBtn = () => {
+//         // this.$el.find("#find_location").val()
+//         var self = this;
+//         var geocoder = new this.props.google.maps.Geocoder()
+//         geocoder.geocode({'address': this.$el.find("#find_location").val()}, function(results, status) {
+//             var latitude = results[0].geometry.location.lat();
+//             var longitude = results[0].geometry.location.lng();
+//             self.setState(U(self.state, {currentLocation: {$set: {lat: latitude,lng: longitude}}}));
+//             console.log(results)
+//         });
+//     }
+//     render() {
+//         const style = Object.assign({}, mapStyles.map, this.props.style, {
+//             display: this.props.visible ? 'inherit' : 'none'
+//         });
+//         return (
+//             <div id="map_container" ref={(item) => {this.$el = $(item)}}>
+//                 <input type="text" style={{position: "absolute", zIndex: 1000, left: "20px"}} id="find_location" />
+//                 <button style={{position: "absolute", zIndex: 1000}} onClick={this.onClickFindBtn.bind(this)}>Find</button>
+//                 <div style={style} ref="map">
+//                     Loading map...
+//                     {this.renderChildren()}
+//                 </div>
+//             </div>
+//         )
+//     }
+// }
 
-MapMap = Pp(MapMap);
+// MapMap = Pp(MapMap);
 
 // class MapContainer extends Component {
 //     constructor(props){
@@ -306,12 +382,19 @@ export class MapLA extends Component {
         const style = Object.assign({}, mapStyles.map, this.props.style, {
             display: this.props.visible ? 'inherit' : 'none'
         });
+        {/*<input type="text" style={{position: "absolute", zIndex: 1000, left: "20px"}} id="find_location" />*/}
+        {/*<button style={{position: "absolute", zIndex: 1000}} onClick={this.onClickFindBtn.bind(this)}>Find</button>*/}
         return (
-            <div id="map_container" ref={(item) => {this.$el = $(item)}}>
-                <input type="text" style={{position: "absolute", zIndex: 1000, left: "20px"}} id="find_location" />
-                <button style={{position: "absolute", zIndex: 1000}} onClick={this.onClickFindBtn.bind(this)}>Find</button>
-                <div style={style} ref="map">
-                    Loading map...
+            <div id="map_container" style={{display: "flex", flex: 1, position: "relative", height: "100%"}} ref={(item) => {this.$el = $(item)}}>
+                <div style={{width: "70%", position: "relative"}}>
+                    <div style={style} ref="map">
+                        Loading map...
+                    </div>
+                </div>
+                <div style={{width: "30%", paddingLeft: "10px"}}>
+                    <div>
+
+                    </div>
                     {this.renderChildren()}
                 </div>
             </div>
@@ -374,6 +457,42 @@ export class MyInfoWindow extends Component {
 
 MyInfoWindow = Pp(MyInfoWindow)
 
+export class MarkerInfo extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (
+            <div className="su--map_marker_info" style={{background: "white", height: "100%"}}>
+                <div>
+                    <div class="su--map_marker_banner">
+                        <img style={{width: "100%"}} src="https://lh5.googleusercontent.com/p/AF1QipOkMq-JOxN4UdWfnDD8iO3HBfo6l0BaV9VH0RQ=w408-h270-k-no"/>
+                    </div>
+                    <div style={{width: "100%", height: "70px", backgroundColor: "#282F33"}}>
+
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <ul style={{listStyle: "none", padding: "10px 0px"}}>
+                            <li style={{padding: "3px 0px"}}><i style={{fontSize: "28px", marginRight: "5px"}} className="fa fa-map-marker" aria-hidden="true" /> Ngõ 28B Điện Biên Phủ, Điện Biên, Hà Nội, Việt Nam</li>
+                            <li style={{padding: "3px 0px"}}><i style={{fontSize: "28px", marginRight: "5px"}} className="fa fa-globe" aria-hidden="true" />moonwork.com.vn</li>
+                            <li style={{padding: "3px 0px"}}><i style={{fontSize: "28px", marginRight: "5px"}} className="fa fa-phone" aria-hidden="true" />+84 432444207</li>
+                            <li style={{padding: "3px 0px"}}><i style={{fontSize: "28px", marginRight: "5px"}} className="fa fa-clock-o" aria-hidden="true" />Hiện đang mở cửa: 08:30-21:00</li>
+                            <li style={{padding: "3px 0px"}}><i style={{fontSize: "28px", marginRight: "5px"}} className="fa fa-check-circle" aria-hidden="true" />Xác nhận doanh nghiệp này</li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <button className="btn btn-primary">Order Now !</button>
+                        <button className="btn btn-default">View More</button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
 export class MapContainer extends Component {
     constructor(props){
         super(props);
@@ -403,15 +522,22 @@ export class MapContainer extends Component {
         });
     }
     render() {
-        const style = {width: '500px', height: '500px', position: 'relative'}
+        const style = {width: '100%', height: '500px', position: 'relative'}
         return (
             <div id="ok" style={style} ref={(item) => {this.$el = $(item)}}>
-                <MapLA google={this.props.google}>
-                    <MyMarker click={this.onClickMarker} rightclick={this.onRightClick} />
-                    <MyInfoWindow marker={this.state.activeMarker}>
-                        <h1>Hello</h1>
-                    </MyInfoWindow>
-                </MapLA>
+                {/*<Map centerAroundCurrentLocation={true} clickableIcons={true} google={this.props.google}>*/}
+                    {/*<Marker/>*/}
+                    {/*<InfoWindow marker={this.state.activeMarker}>*/}
+                        {/*<h1>Hello</h1>*/}
+                    {/*</InfoWindow>*/}
+                {/*</Map>*/}
+                 <MapLA google={this.props.google}>
+                     <MapSearch/><MyMarker click={this.onClickMarker} rightclick={this.onRightClick} />
+                     <MyInfoWindow marker={this.state.activeMarker}>
+                         <h1>Hello</h1>
+                     </MyInfoWindow>
+                     <MarkerInfo />
+                 </MapLA>
             </div>
         );
     }
@@ -622,8 +748,8 @@ class Main extends Component {
         return (
             <main>
                 <div id="wrap">
-                    <div className="container" style={{paddingTop: "188px"}}>
-                        <div className="row" style={{height: "500px"}}>
+                    <div className="container" style={{paddingTop: "188px", paddingBottom: "100px"}}>
+                        <div className="row">
                             <OK />
                         </div>
                     </div>
@@ -673,8 +799,6 @@ class App extends Component {
             <div id="app" style={{paddingBottom: '510px'}}>
                 <Header />
                 <Main />
-                <Main />
-                <Footer />
                 <Footer />
             </div>
         );

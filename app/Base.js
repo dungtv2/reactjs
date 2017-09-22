@@ -23,7 +23,7 @@ function Pp(WrappedComponent){
                     owner_instance_app.componentChild = {};
                 }
                 let componentChild = owner_instance_app['componentChild'];
-
+                // set ComponentParent for this
                 self.componentParent = owner_instance_app;
                 this.componentParent = owner_instance_app;
                 // let componentChild = owner_instance_app.componentChild;
