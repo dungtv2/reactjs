@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import ReactDOMServer from 'react-dom/server'
 import c from './Component.less';
-import { Pp } from './Base.js';
+import { Register, aka, Test } from './Base.js';
+import BASE from './Base.js';
 var U = require('react-addons-update');
 // import {withGoogleMap, GoogleMap, Marker} from "react-google-maps"
 import GoogleMapLoader from "react-google-maps-loader"
@@ -44,6 +45,7 @@ const mapStyles = {
 var eventName = ["click", "rightclick"]
 
 
+@Register
 class MapSearch extends Component {
     static propTypes = {
         onClick: PropTypes.func
@@ -55,21 +57,27 @@ class MapSearch extends Component {
     }
     constructor(props){
         super(props);
+        this.onClickFindLocation = this.onClickFindLocation.bind(this);
     }
     onClickFindLocation = () => {
-        alert("Finding....")
+        // this.app.App.setState({chan: "UK CHAN"})
+        this.setStoreState("App", "hello", "CHAN VKL");
+        // setState('App', 'hello', 'Tao Chiu');
+        // this.app.App.alertOK();
+        // setState('Footer', 'footer', 'This is Footer');
+        // TEST.App.setState(U(TEST.App.state, {hello: {$set: "Nihao"}}));
     }
     render() {
         return (
             <div className="su--map_search" style={{position: "absolute", zIndex: 1000}}>
                 <input type="text" placeholder="Find location..." />
                 <button onClick={this.props.onClick}>Find</button>
+                <button onClick={this.onClickFindLocation}>FindOK</button>
             </div>
         )
     }
 }
 
-MapSearch = Pp(MapSearch);
 
 // class MapMarker extends Component {
 //     constructor(props) {
@@ -233,7 +241,7 @@ MapSearch = Pp(MapSearch);
 
 
 
-
+@Register
 export class MyMarker extends Component {
     static propTypes = {
         position: PropTypes.object,
@@ -281,8 +289,8 @@ export class MyMarker extends Component {
     }
 }
 
-MyMarker = Pp(MyMarker)
 
+@Register
 export class MapLA extends Component {
     static propTypes = {
         initialCenter: PropTypes.object,
@@ -402,8 +410,9 @@ export class MapLA extends Component {
     }
 }
 
-MapLA = Pp(MapLA)
 
+
+@Register
 export class MyInfoWindow extends Component {
     componentDidUpdate(prevProps, prevState){
         if (this.props.map !== prevProps.map){
@@ -455,8 +464,8 @@ export class MyInfoWindow extends Component {
     }
 }
 
-MyInfoWindow = Pp(MyInfoWindow)
 
+@Register
 export class MarkerInfo extends Component {
     constructor(props){
         super(props);
@@ -493,6 +502,9 @@ export class MarkerInfo extends Component {
         )
     }
 }
+
+
+@Register
 export class MapContainer extends Component {
     constructor(props){
         super(props);
@@ -544,10 +556,10 @@ export class MapContainer extends Component {
 }
 
 
-var OK = Pp(GoogleApiWrapper({
+var OK = Register(GoogleApiWrapper({
     apiKey: ('AIzaSyDQxjAooOjVtVXe88dfgSAlIAr0Z4M9JKo'),
     version: '3.25',
-})(Pp(MapContainer)))
+})(MapContainer))
 
 //
 // var x = document.getElementById("demo");
@@ -649,6 +661,7 @@ var OK = Pp(GoogleApiWrapper({
 //     }
 // }
 
+@Register
 class Header extends Component {
     constructor(props){
         super(props);
@@ -710,7 +723,9 @@ class Header extends Component {
         );
     }
 }
-Header = Pp(Header)
+
+
+@Register
 class Main extends Component {
     constructor(props){
         super(props);
@@ -758,17 +773,50 @@ class Main extends Component {
         );
     }
 }
-Main = Pp(Main)
+
+
+@Register
+class FooterHeader1 extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (
+            <div>
+                <h1>{this.props.aka.a}</h1>
+                <h1>Footer</h1>
+            </div>
+        )
+    }
+}
+
+@Test([("name", "=", "ok"), ("chan", "=", "xi")])
+class FooterHeader extends Component {
+    constructor(props){
+        super(props);
+    }
+    render() {
+        return (
+            <div>
+                <FooterHeader1 aka={aka}/>
+            </div>
+        )
+    }
+}
+
+@Register
 class Footer extends Component {
     constructor(props) {
         super(props);
+        this.state = {footer: "Nothing At All"}
     }
     render() {
         return (
             <footer>
                 <div className="su--footer-main container">
+                    <FooterHeader />
                     <span className="su--footer_logo center-block">Odoo</span>
-                    <div className="row"></div>
+                    <div className="row">{this.state.footer}</div>
                 </div>
                 <div className="su--footer-footer">
                     <div className="container">
@@ -786,17 +834,22 @@ class Footer extends Component {
     }
 }
 
-Footer = Pp(Footer)
 
-
+@Register
 class App extends Component {
     static root = true
     constructor(props){
         super(props);
+        this.state = {hello: "Xin Chao", chan: "OK CHAN"}
+        this.alertOK = this.alertOK.bind(this);
+    }
+    alertOK() {
+        alert("XamXiLamEm")
     }
     render() {
         return (
             <div id="app" style={{paddingBottom: '510px'}}>
+                {/*<h1>{this.state.hello}</h1>*/}
                 <Header />
                 <Main />
                 <Footer />
@@ -806,4 +859,4 @@ class App extends Component {
 }
 
 
-module.exports = {App: Pp(App)}
+module.exports = {App: App}
