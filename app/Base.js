@@ -59,9 +59,13 @@ function Register(WrappedComponent){
     WrappedComponent.prototype.setStoreState = function (name, stateName, value) {
         let a = {}
         a[stateName] = value;
-        // store.dataStore[name].setState(a);
-        aka.a = 20;
+        store.dataStore[name].setState(a);
+        // aka.a = 20;
     };
+    WrappedComponent.prototype.setAttribute = function (name, attrName, value) {
+        store.dataStore[name][attrName] = value;
+    };
+
     WrappedComponent.prototype.updateState = function (state={}) {
         var newState = {};
         for (let [k, v] of Object.entries(state)){

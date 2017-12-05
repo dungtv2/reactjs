@@ -61,7 +61,7 @@ class MapSearch extends Component {
     }
     onClickFindLocation = () => {
         // this.app.App.setState({chan: "UK CHAN"})
-        this.setStoreState("App", "hello", "CHAN VKL");
+        this.setStoreState("Header1", "a", "234");
         // setState('App', 'hello', 'Tao Chiu');
         // this.app.App.alertOK();
         // setState('Footer', 'footer', 'This is Footer');
@@ -662,6 +662,199 @@ var OK = Register(GoogleApiWrapper({
 // }
 
 @Register
+class Header1 extends Component {
+    constructor (props){
+        super(props)
+        this.state = {a: '12'}
+    }
+    render() {
+        return (
+            <div>{this.state.a}</div>
+        )
+    }
+}
+
+class SignInForm extends Component {
+    static propTypes = {
+
+    }
+    static defaultProps = {
+
+    }
+    constructor (props) {
+        super(props);
+        this.state = {open: false};
+    }
+    render () {
+        return (
+            <div class="sign_in">
+
+            </div>
+        )
+    }
+}
+
+class SignUpForm extends Component {
+    static propTypes = {
+
+    }
+    static defaultProps = {
+
+    }
+    constructor (props) {
+        super(props);
+        this.state = {open: false};
+    }
+    render () {
+        return (
+            <div class="sign_out">
+
+            </div>
+        )
+    }
+}
+
+class MenuItem extends Component {
+    static propTypes = {
+        name: PropTypes.string,
+        active: PropTypes.bool,
+        label: PropTypes.string,
+        onClickItem: PropTypes.func
+    }
+    static defaultProps = {
+        name: "na",
+        active: false,
+        label: "N/A",
+        onClickItem: () => {}
+    }
+    constructor (props) {
+        super (props);
+
+    }
+    onClick = (e) => {
+        const { active, onClickItem} = this.props;
+        if (!active){
+            onClickItem();
+        }
+    }
+    render () {
+        const {name, active, label} = this.props;
+        return (
+            <li onClick={this.onClick} name={name}>
+                <a className={active ? "active" : ""}>{label}</a>
+            </li>
+        )
+    }
+}
+
+
+@Register
+class Menu extends Component {
+    static propTypes = {
+        menus: PropTypes.object,
+        curItem: PropTypes.string,
+        prevItem: PropTypes.string,
+    }
+    static defaultProps = {
+        menus: {home: {active: true, label: "HOME"}, around: {active: false, label: "AROUND"}},
+        curItem: "home",
+        prevItem: null,
+    }
+    constructor (props) {
+        super(props);
+        const {menus, curItem, prevItem} = props;
+        this.menus = menus;
+        this.curItem = curItem;
+        this.prevItem = prevItem;
+        this.state = {menus: this.menus};
+    }
+    componentWillMount () {
+        this.verifyItemName(this.curItem);
+        this.setActiveItem();
+    }
+    verifyItemName = (itemName) => {
+        if (!this.menus.hasOwnProperty(itemName)){
+            alert(`Item Name ${itemName} not in Menu, pls check again`);
+            return false;
+        }
+        return true;
+    }
+    setCurPrevItem = (itemName) => {
+        this.verifyItemName(itemName);
+        this.prevItem = this.curItem;
+        this.curItem = itemName;
+        return true
+    }
+    setActiveItem = (itemName=null) => {
+        if (itemName){
+            this.setCurPrevItem(itemName);
+        }
+        this.menus[this.curItem].active = true;
+        if (this.prevItem) {
+            this.menus[this.prevItem].active = false;
+        }
+        this.setState({menus: this.menus});
+    }
+    onClickItem = (itemName) => {
+        this.setActiveItem(itemName);
+    }
+    render () {
+        const menuItem = Object.keys(this.state.menus).map((k) =>
+            <MenuItem key={k} name={k} {...this.state.menus[k]}
+                     onClickItem={() => this.onClickItem(k)} />
+        );
+        return (
+            <ul className="su_header_nav">
+                {menuItem}
+            </ul>
+        )
+    }
+}
+
+@Register
+class SearchView extends Component {
+    static propTypes = {
+        placeholder: PropTypes.string,
+        value: PropTypes.string,
+        onClickBtnSearch: PropTypes.func,
+    }
+    static defaultProps = {
+        placeholder: "Search here!",
+        value: "Nothing",
+        onClickBtnSearch: () => {alert("nothing")},
+    }
+    constructor (props) {
+        super(props);
+    }
+    componentWillMount () {
+
+    }
+    componentWillUpdate () {
+
+    }
+    onClickSubmit = () => {
+        const {onClickBtnSearch} = this.props;
+        onClickBtnSearch();
+    }
+    render () {
+        return (
+            <div className="su--search-main">
+                <input type="text"
+                       name="search" className="su--search-query form-control"
+                       defaultValue={value}
+                       placeholder={placeholder} />
+                <span className="input-group-btn">
+                    <button type="submit" className="btn btn-link su--btn_search-main"
+                            onClick={this.onClickSubmit}>
+                        <i className="fa fa-search" />
+                    </button>
+                </span>
+            </div>
+        )
+    }
+}
+
+@Register
 class Header extends Component {
     constructor(props){
         super(props);
@@ -679,45 +872,60 @@ class Header extends Component {
     componentDidMount() {
         this.scroll();
     }
+    renderHeader() {
+        const html = <div className="su_header_main">
+            <a className="su_header_logo">Odoo</a>
+            <div className="su--header_button">
+                <a className="su--header_btn_sign">SIGN IN</a>
+                <a className="btn btn-primary">SIGN UP</a>
+            </div>
+            <Menu />
+        </div>
+        return html;
+    }
+    renderMain () {
+        return null
+    }
+    renderFooter() {
+        const html = <div className="su_header_search">
+            <div className="container">
+                <div className="row">
+                    <div className="col-xs-7 col-md-3 col-sm-4 col-lg-2 su--nav_btn_group">
+                        <a className="su--nav_btn active"><i className="fa fa-cube"></i> APPS</a>
+                        <a className="su--nav_btn"><i className="fa fa-paint-brush"></i> THEMES</a>
+                    </div>
+                    <div className="col-xs-5 col-sm-2 col-md-3 col-sm-push-6 col-lg-push-7 text-right su--nav_btn_group">
+                        <a className="su--nav_btn" href="/apps/upload">
+                            <i className="fa fa-upload"></i> SUBMIT
+                        </a>
+                    </div>
+                    <div className="clearfix visible-xs-block"></div>
+                    <div className="col-sm-6 col-md-6 col-sm-pull-2 col-md-pull-3 col-lg-offset-1 su--search-container">
+                        <div className="su--search-main">
+                            <input type="text" name="search" className="su--search-query form-control" placeholder="Your search..." />
+                            <span className="input-group-btn">
+                                <button type="submit" className="btn btn-link su--btn_search-main">
+                                    <i className="fa fa-search" />
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        return html;
+    }
     render() {
         return (
             <header>
-                <div className="su_header_main">
-                    <a className="su_header_logo">Odoo</a>
-                    <div className="su--header_button">
-                        <a className="su--header_btn_sign">SIGN IN</a>
-                        <a className="btn btn-primary">SIGN UP</a>
-                    </div>
-                    <ul className="su_header_nav">
-                        <li><a className="active">HOME</a></li>
-                        <li><a>AROUND</a></li>
-                    </ul>
+                <div className="header">
+                    {this.renderHeader()}
                 </div>
-                <div className="su_header_search">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-xs-7 col-md-3 col-sm-4 col-lg-2 su--nav_btn_group">
-                                <a className="su--nav_btn active"><i className="fa fa-cube"></i> APPS</a>
-                                <a className="su--nav_btn"><i className="fa fa-paint-brush"></i> THEMES</a>
-                            </div>
-                            <div className="col-xs-5 col-sm-2 col-md-3 col-sm-push-6 col-lg-push-7 text-right su--nav_btn_group">
-                                <a className="su--nav_btn" href="/apps/upload">
-                                    <i className="fa fa-upload"></i> SUBMIT
-                                </a>
-                            </div>
-                            <div className="clearfix visible-xs-block"></div>
-                            <div className="col-sm-6 col-md-6 col-sm-pull-2 col-md-pull-3 col-lg-offset-1 su--search-container">
-                                <div className="su--search-main">
-                                    <input type="text" name="search" className="su--search-query form-control" placeholder="Your search..." />
-                                        <span className="input-group-btn">
-                                        <button type="submit" className="btn btn-link su--btn_search-main">
-                                            <i className="fa fa-search" />
-                                        </button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div className="main">
+                    {this.renderMain()}
+                </div>
+                <div className="footer">
+                    {this.renderFooter()}
                 </div>
             </header>
         );
@@ -790,44 +998,95 @@ class FooterHeader1 extends Component {
     }
 }
 
-@Test([("name", "=", "ok"), ("chan", "=", "xi")])
-class FooterHeader extends Component {
+// @Test([("name", "=", "ok"), ("chan", "=", "xi")])
+@Register
+class SocialComponent extends Component {
     constructor(props){
         super(props);
     }
     render() {
+        const {name} = this.props;
         return (
-            <div>
-                <FooterHeader1 aka={aka}/>
-            </div>
+            <a>
+                <i className={name}></i>
+            </a>
         )
     }
 }
 
+// @Register
+// class FooterHeader extends Component {
+//     constructor (props){
+//         super(props);
+//     }
+//     render () {
+//         <div>
+//
+//         </div>
+//     }
+// }
+//
+// @Register
+// class FooterContainer extends Component {
+//     constructor(props) {
+//         super(props);
+//     }
+//     render() {
+//         return (
+//             <div></div>
+//         )
+//     }
+// }
+
 @Register
 class Footer extends Component {
+    static propTypes = {
+        title: PropTypes.string,
+    }
+    static defaultProps = {
+        title: "N/A",
+    }
     constructor(props) {
         super(props);
         this.state = {footer: "Nothing At All"}
     }
+    renderHeader () {
+        const html = <div className="su--footer-main container">
+                        <span className="su--footer_logo center-block">{this.props.chan}</span>
+                        <div className="row">{this.state.footer}</div>
+                    </div>;
+        return html;
+    }
+    renderFooter () {
+        const {title} = this.props;
+        const html = <div className="su--footer-footer">
+                    <div className="container">
+                        <a className="small" href="/page/website-builder">Website made with <span className="">{title}</span></a>
+                        <div className="su--social_links pull-right">
+                            <SocialComponent
+                                name={"fa fa-facebook"} />
+                            <SocialComponent
+                                name={"fa fa-twitter"} />
+                            <SocialComponent
+                                name={"fa fa-linkedin"} />
+                            <SocialComponent
+                                name={"fa fa-envelope"} />
+                        </div>
+                    </div>
+                </div>;
+        return html;
+    }
     render() {
         return (
             <footer>
-                <div className="su--footer-main container">
-                    <FooterHeader />
-                    <span className="su--footer_logo center-block">Odoo</span>
-                    <div className="row">{this.state.footer}</div>
+                <div className="header">
+                    {this.renderHeader()}
                 </div>
-                <div className="su--footer-footer">
-                    <div className="container">
-                        <a className="small" href="/page/website-builder">Website made with <span className="">Odoo</span></a>
-                        <div className="su--social_links pull-right">
-                            <a><i className="fa fa-facebook"></i></a>
-                            <a><i className="fa fa-twitter"></i></a>
-                            <a><i className="fa fa-linkedin"></i></a>
-                            <a><i className="fa fa-envelope"></i></a>
-                        </div>
-                    </div>
+                <div className="main">
+
+                </div>
+                <div class="footer">
+                    {this.renderFooter()}
                 </div>
             </footer>
         );
@@ -840,19 +1099,16 @@ class App extends Component {
     static root = true
     constructor(props){
         super(props);
-        this.state = {hello: "Xin Chao", chan: "OK CHAN"}
-        this.alertOK = this.alertOK.bind(this);
-    }
-    alertOK() {
-        alert("XamXiLamEm")
+        this.state = {hello: "Xin Chao", chan: "OK CHAN"};
     }
     render() {
+        const a = {b: 1, c: 2, d: 3}
         return (
             <div id="app" style={{paddingBottom: '510px'}}>
-                {/*<h1>{this.state.hello}</h1>*/}
                 <Header />
                 <Main />
-                <Footer />
+                <Footer
+                    title={"ARD"} {...a} />
             </div>
         );
     }
