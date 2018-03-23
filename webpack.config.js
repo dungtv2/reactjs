@@ -22,7 +22,8 @@ module.exports = {
     // ],
     entry: [
        'webpack-hot-middleware/client?reload=true',
-        path.join(__dirname, 'app/main.js')
+        path.join(__dirname, 'addons/web/main.js')
+        // path.join(__dirname, 'app/main.js')
     ],
     output: {
         path: path.join(__dirname, '/dist/'),

@@ -1,0 +1,161 @@
+@font-face {
+  font-family: SFD-Bold;
+  src: url(/assets/font/SFD-Bold.woff);
+}
+
+
+//Article
+.article {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 0px;
+  margin-right: 0px;
+  .art_img {
+    display: flex;
+    cursor: pointer;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .art_img:hover {
+    box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.1), 0 2px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  .art_detail {
+    flex: 1;
+    //padding: 0px 10px;
+    .art_title {
+      cursor: pointer;
+      font-family: SFD-Bold;
+      color: #333;
+    }
+    .art_title:hover {
+      color: black;
+    }
+    .art_des {
+      font-family: Arial;
+      color: #444;
+    }
+  }
+}
+.article.row {
+  flex-direction: row;
+  .art_img {
+    width: 60%;
+  }
+}
+.article.column {
+  flex-direction: column;
+}
+
+
+// Wrap Article OneMany
+.wrap_art_om {
+  display: flex;
+  width: 100%;
+  padding: 15px 0px;
+  margin-right: 0px;
+  margin-left: 0px;
+  .art_left {
+    flex: 1;
+    .article {
+      .art_img {}
+      .art_detail {
+        .art_title {
+          font-size: 24px;
+        }
+      }
+    }
+
+  }
+  .art_right {
+    flex: 1;
+    display: flex;
+  }
+}
+
+.wrap_art_om.column {
+  flex-direction: column;
+  .art_right {
+    flex-direction: row;
+    .article {
+      margin-right: 20px;
+    }
+    .article:last-child{
+      margin-right: 0px;
+    }
+  }
+  .art_left {
+    padding-bottom: 20px;
+    .article {
+      .art_img {
+
+      }
+      .art_detail {
+        padding-left: 20px;
+        .art_title {
+          margin-top: 0px;
+        }
+        .art_des {
+
+        }
+      }
+    }
+  }
+}
+.wrap_art_om.row {
+  flex-direction: row;
+  .art_right {
+    flex-direction: column;
+    .article {
+      margin-bottom: 15px;
+      .art_img {
+        width: 45%;
+      }
+      .art_detail {
+        padding-left: 15px;
+        .art_title {
+          margin-top: 0px;
+        }
+      }
+    }
+    .article:last-child {
+    }
+  }
+  .art_left {
+    margin-right: 20px;
+  }
+}
+
+//Wrap Article Line
+.wrap_art_lines {
+  padding: 15px 0px;
+  .wrap_art_line:last-child {
+    padding-bottom: 0px;
+  }
+}
+.wrap_art_line {
+  display: flex;
+  width: 100%;
+  padding-bottom: 20px;
+  .article {
+    margin-right:20px;
+  }
+  .article:last-child {
+    margin-right: 0px;
+  }
+  .article.row {
+    padding-bottom: 15px;
+    border-bottom: 1px dotted #cdcdcd;
+    .art_img {
+      width: 30%;
+    }
+    .art_detail {
+      padding-left: 15px;
+      .art_title {
+        margin-top: 0px;
+      }
+    }
+  }
+}
