@@ -1,14 +1,15 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import Wrapper from "../../../base/components/Wrapper";
 
 
 class GroupSocial extends Component {
-    static propTypes = {
-        children: PropTypes.element.isRequired,
-    }
-    static defaultProps = {
-        children: null,
-    }
+    // static propTypes = {
+    //     children: PropTypes.element.isRequired,
+    // }
+    // static defaultProps = {
+    //     children: null,
+    // }
     render () {
         return (
             <div className="su--social_links pull-right">

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import Wrapper from '../../../base/components/Wrapper';
 
 
@@ -11,7 +12,7 @@ export default class SearchView extends Component {
         onChange: PropTypes.func
     }
     static defaultProps = {
-        placeholder: "Search here!",
+        placeholder: "",
         value: "",
         onClick: () => {alert("nothing")},
         onChange: (e) => {alert("text change")},

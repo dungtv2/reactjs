@@ -1,11 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from "react";
+import PropTypes from 'prop-types';
 import Wrapper from '../../../base/components/Wrapper';
 
 @Wrapper.Register
 class MenuItem extends Component {
     static propTypes = {
         name: PropTypes.string,
-        active: PropTypes.bool,
+        active: PropTypes.string,
         label: PropTypes.string,
         onClickItem: PropTypes.func
     }

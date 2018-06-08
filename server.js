@@ -19,6 +19,15 @@ const port = isDeveloping ? 3001 : process.env.PORT;
 const app = express();
 const router = express.Router();
 var mongoose = require('mongoose');
+var Odoo = require('odoo-xmlrpc');
+var odoo = new Odoo({
+    url: "localhost",
+    port: 8080,
+    db: "odoo11_1",
+    username: "admin",
+    password: "admin"
+});
+
 var pg = require('pg');
 var PGUSER = "odoo";
 var pgPassword = "01665640696";
@@ -56,7 +65,7 @@ var myClient
 // });
 app.use("/static", express.static('app/static'))
 app.use("/assets", express.static('assets'))
-app.use("/assets", express.static('/home/odoo/odoo11/projects/TUVI/uploads/assets/home/odoo/odoo11/projects/TUVI/uploads/assets'))
+app.use("/assets", express.static('/home/odoo/odoo11/projects/TUVI/uploads/assets'))
 // app.use(express.static('app'))
 if (isDeveloping) {
     const compiler = webpack(config);
@@ -75,16 +84,24 @@ if (isDeveloping) {
 
     app.use(middleware);
     app.use(webpackHotMiddleware(compiler));
-    app.get('/search:model:domain', function response(req, res) {
-        // res.write(middleware.fileSystem.readFileSync(path.join(__dirname, 'dist/index.html')));
-        // res.end();
-        myClient.query('SELECT * from tv_news', function (err, result) {
+    app.get('/search/:model/:domain', function response(req, res) {
+        // var inParams = [];
+        // inParams.push([]);
+        // var params = [];
+        // params.push(inParams);
+        // odoo.execute_kw('tv.news', 'search', params, function (err, value) {
+        //     if (err) { return console.log(err); }
+        //     console.log('Result: ', value);
+        // });
+        myClient.query('select id, title, description, body, img, img_thumb, img_medium, img_left, img_top,\n' +
+                       '       creation_date, schedule_date, note, hot\n' +
+                       'from tv_news', function (err, result) {
             if (err) {
                 console.log(err)
             }
+            console.log(result.rows)
             res.send(result.rows)
         });
-        // res.send("HELLO");
     });
     // app.get('/list', function (req, res, next){
     //     console.log("bi")
@@ -166,6 +183,25 @@ if (isDeveloping) {
     });
 }
 
+// odoo.connect(function (err) {
+//     if (err) console.log(err)
+//     app.listen(port, '0.0.0.0', function onStart(err) {
+//         if (err) {
+//             console.log(err);
+//         }
+//         console.log('Connected to Odoo server.');
+//         var inParams = [];
+//         inParams.push('read');
+//         inParams.push(false); //raise_exception
+//         var params = [];
+//         params.push(inParams);
+//         odoo.execute_kw('res.partner', 'check_access_rights', params, function (err, value) {
+//             if (err) { return console.log(err); }
+//             console.log('Result: ', value);
+//         });
+//         console.info('==> 🌎 Listening on port %s. Open up http://0.0.0.0:%s/ in your browser.', port, port);
+//     });
+// });
 
 pool.connect(function (err, client, done) {
     if (err) console.log(err)
@@ -174,8 +210,8 @@ pool.connect(function (err, client, done) {
             console.log(err);
         }
         console.info('==> 🌎 Listening on port %s. Open up http://0.0.0.0:%s/ in your browser.', port, port);
+        myClient = client
     });
-    myClient = client
     // var ageQuery = format('SELECT * from numbers WHERE age = %L', age)
     // myClient.query(ageQuery, function (err, result) {
     //     if (err) {

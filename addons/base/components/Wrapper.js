@@ -67,12 +67,12 @@ function Register(WrappedComponent){
         }
         set$El = (wrappedComponentInstance) => {
             // set attr $el for component
-            if (wrappedComponentInstance && wrappedComponentInstance._reactInternalInstance._renderedComponent.getPublicInstance) {
-                wrappedComponentInstance.$el = $(wrappedComponentInstance._reactInternalInstance._renderedComponent.getPublicInstance());
-                if (wrappedComponentInstance.__proto__.hasOwnProperty("__onAfterRender")){
-                    wrappedComponentInstance.__proto__.__onAfterRender.bind(wrappedComponentInstance)();
-                }
-            }
+            // if (wrappedComponentInstance && wrappedComponentInstance._reactInternalInstance._renderedComponent.getPublicInstance) {
+            //     wrappedComponentInstance.$el = $(wrappedComponentInstance._reactInternalInstance._renderedComponent.getPublicInstance());
+            //     if (wrappedComponentInstance.__proto__.hasOwnProperty("__onAfterRender")){
+            //         wrappedComponentInstance.__proto__.__onAfterRender.bind(wrappedComponentInstance)();
+            //     }
+            // }
         }
         render () {
             let newProps = Object.assign({}, this.props, {ref: this.set$El});
